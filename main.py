@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import warnings
+from datetime import datetime
 
 warnings.filterwarnings('ignore')
 
@@ -25,6 +26,10 @@ def extract_bounds_labels(model, n_samples):
 
 def main():
     data_dir = "data"
+    
+    os.makedirs("figures", exist_ok=True)
+    os.makedirs("results", exist_ok=True)
+    
     datasets = [
         "3L", "4C", "S1", "IRIS", "Glass", 
         "Seeds", "Pathbased", "Aggregation", "Compound", "Flame"
@@ -46,9 +51,9 @@ def main():
     results = []
     best_params_saved = {}
     
-    print(f"{'='*110}")
-    print(f"{'BẮT ĐẦU CHẠY THỰC NGHIỆM TỔNG HỢP (TABLE 2 & FIGURES) TRÊN 10 BỘ DỮ LIỆU':^110}")
-    print(f"{'='*110}\n")
+    print(f"{'='*140}")
+    print(f"{'BẮT ĐẦU CHẠY THỰC NGHIỆM TỔNG HỢP (TABLE 2 LOGGING & FIGURES)':^140}")
+    print(f"{'='*140}\n")
 
     for ds_name in datasets:
         file_path_csv = os.path.join(data_dir, f"{ds_name}.csv")
@@ -92,11 +97,9 @@ def main():
             tw_dbscan = ThreeWayDBSCAN(eps=best_eps, min_samples=minPts, eta=best_eta).fit(X)
             ds_dbscan = DScaleDBSCAN(eps=best_eps, min_samples=minPts, eta=best_eta).fit(X)
             
-            # --- VẼ HÌNH TRỰC QUAN ĐỒNG THỜI VÀO FOLDER FIGURES ---
             plot_4_panels(X, y, ds_dbscan.labels_, ce3, tw_dbscan, ds_name)
             print(f" (Đã xuất ảnh: figures/Figure_{ds_name}.png)")
             
-            # Tính Metrics cho bảng
             ce3_lb_preds, ce3_ub_preds = extract_bounds_labels(ce3, n_samples)
             acc_ce3_lb, nmi_ce3_lb, f1_ce3_lb = calculate_accuracy(y, ce3_lb_preds), calculate_nmi(y, ce3_lb_preds), calculate_f1(y, ce3_lb_preds)
             acc_ce3_ub, nmi_ce3_ub, f1_ce3_ub = calculate_accuracy(y, ce3_ub_preds), calculate_nmi(y, ce3_ub_preds), calculate_f1(y, ce3_ub_preds)
@@ -108,9 +111,19 @@ def main():
             ds_preds = ds_dbscan.labels_
             acc_ds_ub, nmi_ds_ub, f1_ds_ub = calculate_accuracy(y, ds_preds), calculate_nmi(y, ds_preds), calculate_f1(y, ds_preds)
             
-            results.append((ds_name, "ACC", acc_ce3_lb, acc_tw_lb, acc_ce3_ub, acc_tw_ub, acc_ds_ub))
-            results.append(("", "NMI", nmi_ce3_lb, nmi_tw_lb, nmi_ce3_ub, nmi_tw_ub, nmi_ds_ub))
-            results.append(("", "F1", f1_ce3_lb, f1_tw_lb, f1_ce3_ub, f1_tw_ub, f1_ds_ub))
+            # CHÚ Ý: Cột Params (eps, minPts, eta, k) đã được đẩy xuống cuối cùng trong Tuple
+            str_eps = f"{best_eps:.2f}"
+            str_eta = f"{best_eta:.2f}"
+            
+            results.append((ds_name, "ACC", 
+                            acc_ce3_lb, acc_tw_lb, acc_ce3_ub, acc_tw_ub, acc_ds_ub,
+                            str_eps, minPts, str_eta, k))
+            results.append(("", "NMI", 
+                            nmi_ce3_lb, nmi_tw_lb, nmi_ce3_ub, nmi_tw_ub, nmi_ds_ub,
+                            "", "", "", ""))
+            results.append(("", "F1", 
+                            f1_ce3_lb, f1_tw_lb, f1_ce3_ub, f1_tw_ub, f1_ds_ub,
+                            "", "", "", ""))
             
         except Exception as e:
             print(f"  -> [LỖI] Xử lý {ds_name} thất bại: {e}")
@@ -120,7 +133,6 @@ def main():
     eta_range = np.arange(0.05, 0.45, 0.05)
     dataset_f1_dict = {}
     
-    # Lấy ra các dataset tiêu biểu hoặc toàn bộ dataset đã chạy thành công
     for ds_fig10 in best_params_saved.keys():
         file_path_csv = os.path.join(data_dir, f"{ds_fig10}.csv")
         file_path_txt = os.path.join(data_dir, f"{ds_fig10}.txt")
@@ -141,22 +153,39 @@ def main():
     plot_figure_10(eta_range, dataset_f1_dict)
     print(" (Đã xuất ảnh: figures/Figure_10_F1_vs_eta.png)")
 
-    # --- IN BẢNG ĐA TẦNG TABLE 2 ---
+    # --- IN BẢNG ĐA TẦNG & LƯU FILE EXCEL (.xlsx) ---
     if len(results) > 0:
         columns = pd.MultiIndex.from_tuples([
             ("Dataset", ""), ("Metric", ""),
             ("Lower bound C", "CE3-kmeans"), ("Lower bound C", "3W-DBSCAN"),
-            ("Upper bound C", "CE3-kmeans"), ("Upper bound C", "3W-DBSCAN"), ("Upper bound C", "DScale-DBSCAN")
+            ("Upper bound C", "CE3-kmeans"), ("Upper bound C", "3W-DBSCAN"), ("Upper bound C", "DScale-DBSCAN"),
+            ("Parameters", "eps"), ("Parameters", "minPts"), 
+            ("Parameters", "eta"), ("Parameters", "k")
         ])
         
         df_results = pd.DataFrame(results, columns=columns)
         pd.options.display.float_format = '{:.4f}'.format
         
-        print("\n" + "="*110)
-        print(f"{'TABLE 2: DIFFERENT CLUSTERING PERFORMANCE ON 10 DATASETS':^110}")
-        print("="*110)
+        pd.set_option('display.max_columns', None)
+        pd.set_option('display.width', 250) 
+        
+        print("\n" + "="*145)
+        print(f"{'TABLE 2: DIFFERENT CLUSTERING PERFORMANCE ON 10 DATASETS':^145}")
+        print("="*145)
         print(df_results.to_string(index=False))
-        print("="*110)
+        print("="*145)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"Table2_{timestamp}.xlsx"
+        filepath = os.path.join("results", filename)
+        
+        # KHẮC PHỤC LỖI: Đặt Dataset và Metric làm Index để Excel tự động gộp ô (Merge cells)
+        df_export = df_results.set_index([("Dataset", ""), ("Metric", "")])
+        
+        # Lưu file bình thường, bỏ đi tham số index=False
+        df_export.to_excel(filepath)
+        
+        print(f"\n[THÀNH CÔNG] Bảng Data Table chuẩn ô lưới đã được lưu ra file Excel tại: {filepath}")
 
 if __name__ == "__main__":
     main()
