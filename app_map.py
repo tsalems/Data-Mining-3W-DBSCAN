@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import folium
-from streamlit_folium import folium_static
+from streamlit_folium import st_folium
 from branca.element import Template, MacroElement
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import DBSCAN
@@ -133,7 +133,7 @@ if mode == "🔴 Live (Chờ xử lý)":
     
     st.info("💡 **Trạng thái:** Các điểm vàng đang nhấp nháy báo hiệu hệ thống đang liên tục nhận đơn hàng mới. Hãy chọn thuật toán bên tay trái để bắt đầu chia đơn cho Shipper.")
     map_html = draw_dashboard_map(df_orders, mode="Live")
-    folium_static(map_html, width=1300, height=550)
+    st_folium(map_html, width=1300, height=550)
 
 elif mode == "🔵 1. DBSCAN (Cũ)":
     model = DBSCAN(eps=eps_val, min_samples=min_pts).fit(X_scaled)
@@ -147,7 +147,7 @@ elif mode == "🔵 1. DBSCAN (Cũ)":
     
     st.error("❌ **Đánh giá DBSCAN:** Lãng phí! Gom quá nhiều đơn thành cụm khổng lồ, Shipper không thể chạy nổi, trong khi ngoại thành thì bị hủy sạch.")
     map_html = draw_dashboard_map(df_orders, mode="DBSCAN", model=model)
-    folium_static(map_html, width=1300, height=550)
+    st_folium(map_html, width=1300, height=550)
 
 elif mode == "🟡 2. 3W-DBSCAN":
     model = ThreeWayDBSCAN(eps=eps_val, min_samples=min_pts, eta=0.2).fit(X_scaled)
@@ -163,7 +163,7 @@ elif mode == "🟡 2. 3W-DBSCAN":
     
     st.warning("⚠️ **Đánh giá 3W-DBSCAN:** Tư duy 3 vùng rất tốt, nhưng do bán kính cố định, đơn hàng khu vực ngoại vi (Hà Đông) vẫn bị phân loại thành rác.")
     map_html = draw_dashboard_map(df_orders, mode="3W", model=model)
-    folium_static(map_html, width=1300, height=550)
+    st_folium(map_html, width=1300, height=550)
 
 elif mode == "🟢 3. LE3W-DBSCAN (Đề xuất)":
     model = LE3W_DBSCAN(min_samples=min_pts, k_neighbors=k_val).fit(X_scaled)
@@ -179,4 +179,4 @@ elif mode == "🟢 3. LE3W-DBSCAN (Đề xuất)":
     
     st.success("✅ **Đánh giá LE3W-DBSCAN:** Hoàn hảo! Nhờ **Local Eps**, thuật toán khoanh vùng Lõi rất gọn ở trung tâm nhưng vẫn bắt trọn được cụm điểm ở Hà Đông. Không một Shipper nào bị quá tải!")
     map_html = draw_dashboard_map(df_orders, mode="LE3W", model=model)
-    folium_static(map_html, width=1300, height=550)
+    st_folium(map_html, width=1300, height=550)
