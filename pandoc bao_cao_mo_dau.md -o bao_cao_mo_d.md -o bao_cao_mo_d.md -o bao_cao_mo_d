@@ -1,0 +1,1 @@
+ pandoc bao_cao_mo_dau.md -o bao_cao_mo_dau.docx

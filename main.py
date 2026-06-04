@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 import warnings
+from datetime import datetime
 
 warnings.filterwarnings('ignore')
 
@@ -30,14 +31,14 @@ def main():
     os.makedirs("results/3W", exist_ok=True)
     
     datasets = [
-        "3L", "4C", "S1", "IRIS", "Glass", 
+        "4C", "IRIS", "Glass", 
         "Seeds", "Pathbased", "Aggregation", "Compound", "Flame"
     ]
     
     param_grid = {
-        '3L': {'min_samples': 5, 'eta': 0.20, 'k': 3},
+        # '3L': {'min_samples': 5, 'eta': 0.20, 'k': 3},
         '4C': {'min_samples': 5, 'eta': 0.20, 'k': 4},
-        'S1': {'min_samples': 10, 'eta': 0.15, 'k': 15},
+        # 'S1': {'min_samples': 10, 'eta': 0.15, 'k': 15},
         'Pathbased': {'min_samples': 5, 'eta': 0.20, 'k': 3},
         'Aggregation': {'min_samples': 5, 'eta': 0.20, 'k': 7},
         'Compound': {'min_samples': 5, 'eta': 0.20, 'k': 6},
@@ -160,9 +161,6 @@ def main():
         print(f"{'TABLE 2: DIFFERENT CLUSTERING PERFORMANCE ON 10 DATASETS':^110}")
         print("="*110)
         print(df_results.to_string(index=False))
-<<<<<<< HEAD
-        print("="*110)
-=======
         print("="*145)
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -176,7 +174,6 @@ def main():
         df_export.to_excel(filepath)
         
         print(f"\n[THÀNH CÔNG] Bảng Data Table chuẩn ô lưới đã được lưu ra file Excel tại: {filepath}")
->>>>>>> 34525a8e906cc6f452e5306095a293b97b0d507f
 
 if __name__ == "__main__":
     main()

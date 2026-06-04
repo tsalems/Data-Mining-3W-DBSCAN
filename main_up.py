@@ -29,7 +29,7 @@ def main():
         '4C':          {'eps_3w': 0.07, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 20, 'k_le': 43},
         # '3L': LE3W khong hieu qua (cum elongated), NMI chi dat 0.545
         # 'S1': LE3W khong tim duoc dung 15 cum (qua nhieu cum nho)
-        # 'Glass': {'eps_3w': 1.30, 'minPts_3w': 4, 'eta': 0.20, 'minPts_le': 4, 'k_le': 10},
+        'Glass': {'eps_3w': 1.30, 'minPts_3w': 4, 'eta': 0.20, 'minPts_le': 4, 'k_le': 10},
     }
     table2_data = []
     table4_data = []
