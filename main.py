@@ -33,7 +33,7 @@ def main():
     param_grid = {
         '3L': {'min_samples': 5, 'eta': 0.20, 'k': 3},
         '4C': {'min_samples': 5, 'eta': 0.20, 'k': 4},
-        # 'S1': {'min_samples': 10, 'eta': 0.15, 'k': 15},
+        'S1': {'min_samples': 10, 'eta': 0.15, 'k': 15},
         'Pathbased': {'min_samples': 5, 'eta': 0.20, 'k': 3},
         'Aggregation': {'min_samples': 5, 'eta': 0.20, 'k': 7},
         'Compound': {'min_samples': 5, 'eta': 0.20, 'k': 6},

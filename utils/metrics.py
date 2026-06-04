@@ -59,3 +59,32 @@ def calculate_nmi(true_labels, pred_labels):
     """Tính NMI - Eq. (13)"""
     if len(true_labels) == 0: return 0.0
     return normalized_mutual_info_score(true_labels, pred_labels)
+
+def calculate_soft_metrics(model, n_samples):
+    """
+    Tính toán các chỉ số Soft Clustering: gamma, alpha, alpha_star 
+    theo định nghĩa của bài báo (Maji et al. và Zhang).
+    """
+    pos_mass = 0
+    total_mass = 0
+    alpha_sum = 0
+    c = len(model.POS.keys())
+    
+    if c == 0:
+        return 0.0, 0.0, 0.0
+        
+    for k in model.POS.keys():
+        len_pos = len(model.POS[k])
+        len_bnd = len(model.BND[k])
+        
+        pos_mass += len_pos
+        total_mass += (len_pos + len_bnd)
+        
+        if (len_pos + len_bnd) > 0:
+            alpha_sum += (len_pos / (len_pos + len_bnd))
+            
+    gamma = pos_mass / n_samples
+    alpha = alpha_sum / c
+    alpha_star = pos_mass / total_mass if total_mass > 0 else 0
+    
+    return gamma, alpha, alpha_star
