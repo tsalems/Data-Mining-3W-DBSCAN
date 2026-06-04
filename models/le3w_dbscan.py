@@ -66,10 +66,12 @@ class LE3W_DBSCAN:
                 unclassified.remove(p)
                 labels[p] = -1
                 
-        # Gộp cụm quá nhỏ (< min_samples điểm) vào noise để xử lý ở giai đoạn 3-chiều
+        # Gộp cụm quá nhỏ vào noise — ngưỡng tối thiểu là max(min_samples, 5)
+        # để tránh cụm chỉ 2-3 điểm khi min_samples nhỏ
+        min_cluster_size = max(self.min_samples, 5)
         for cid in set(labels) - {-1}:
             members = np.where(labels == cid)[0]
-            if len(members) < self.min_samples:
+            if len(members) < min_cluster_size:
                 labels[members] = -1
                 core_flags[members] = False
                 if cid in self.local_eps_dict:

@@ -17,18 +17,19 @@ def main():
     data_dir = "data"
     os.makedirs("results/LE3W", exist_ok=True)
     
-    # 4 Dataset được dùng trong paper cho Figure 8, 9, 10, 11
     target_datasets = {
-        # '3L': {'eps_3w': 0.19, 'minPts': 5, 'eta': 0.20, 'k_le': 15},
-        # '4C': {'eps_3w': 0.07, 'minPts': 5, 'eta': 0.20, 'k_le': 20},
-        # 'S1': {'eps_3w': 0.05, 'minPts': 10, 'eta': 0.15, 'k_le': 30},
+        # --- Dataset bài báo LE3W-DBSCAN (Shen 2023) ---
         'Aggregation': {'eps_3w': 0.09, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 10, 'k_le': 20},
-        'Compound':    {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 2,  'k_le': 15},
-        'Pathbased':   {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 3,  'k_le': 11},
+        'Compound':    {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 5,  'k_le': 15},
+        'Pathbased':   {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 5,  'k_le': 12},
         'Flame':       {'eps_3w': 0.15, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 18, 'k_le': 24},
         'IRIS':        {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.30, 'minPts_le': 8,  'k_le': 14},
+        'Seeds':       {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 20, 'k_le': 25},
+        # --- Dataset bài báo 3W-DBSCAN (Yu 2019) ---
+        '4C':          {'eps_3w': 0.07, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 20, 'k_le': 43},
+        # '3L': LE3W khong hieu qua (cum elongated), NMI chi dat 0.545
+        # 'S1': LE3W khong tim duoc dung 15 cum (qua nhieu cum nho)
         # 'Glass': {'eps_3w': 1.30, 'minPts_3w': 4, 'eta': 0.20, 'minPts_le': 4, 'k_le': 10},
-        'Seeds':       {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 20, 'k_le': 25}
     }
     table2_data = []
     table4_data = []
