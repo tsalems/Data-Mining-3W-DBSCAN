@@ -1,0 +1,593 @@
+﻿14 pages
+--- PAGE 1 ---
+Physica A 535 (2019) 122289
+Contents lists available at ScienceDirect
+Physica A
+journal homepage: www.elsevier.com/locate/physa
+A three-way clustering method based on an improved
+DBSCAN algorithm
+Hui Yu a,∗, LuYuan Chen a, JingTao Yao b, XingNan Wang a
+a School of Computer Science, Northwestern Polytechnical University, Xi’an 710072, China
+b Department of Computer Science, University of Regina, Regina, Canada S4S 0A2
+h i g h l i g h t s
+• A three-way clustering method 3W-DBSCAN is proposed.
+• The representation of clustering results is consistent with human cognitive thinking.
+• Experiments show that 3W-DBSCAN has a good performance in clustering.
+a r t i c l e i n f o
+Article history:
+Received 25 March 2019
+Received in revised form 3 June 2019
+Available online 8 August 2019
+Keywords:
+Decision support
+Three-way decision
+Clustering
+DBSCAN
+a b s t r a c t
+Clustering is a fundamental research field and plays an important role in data analysis.
+To better address the relationship between an element and a cluster, a Three-Way
+clustering method based on an Improved DBSCAN (3W-DBSCAN) algorithm is proposed
+in this paper. 3W-DBSCAN represents a cluster by a pair of nested sets called lower
+bound and upper bound respectively. The two bounds classify objects into three status:
+belong-to, not belong-to and ambiguity. Objects in lower bound certainly belong to the
+cluster. Objects in upper bound while not in the lower bound are ambiguous because
+they are in a boundary region and might belong to one or more clusters. Objects
+beyond the upper bound certainly do not belong to the same cluster. This clustering
+representation can well explain the clustering result and consist with human cognitive
+thinking. By improving similarity calculation, improved DBSCAN is presented to obtain
+initial clustering results, then three-way decision strategies are used to acquire the
+positive and boundary regions of a cluster. Three benchmarks Accuracy ( Acc), F-measure
+(F1), NMI and ten datasets including three synthetic datasets, three UCI datasets and four
+shape datasets are used in experiments to evaluate the effectiveness of 3W-DBSCAN.
+Experimental results suggest that 3W-DBSCAN has a good performance and is effective
+in clustering.
+© 2019 Elsevier B.V. All rights reserved.
+1. Introduction
+As a powerful data analysis tool, clustering plays an important role in data mining, which is widely used in various
+areas such as image analysis [1,2], network structure analysis [3–6], bioinformatics [7–9] and so on. The objective of
+clustering is to group similar objects into the same cluster while dissimilar objects into different clusters [10–12]. It is an
+unsupervised learning method without any prior information to find potential similar patterns from a dataset [13–16].
+∗ Corresponding author.
+E-mail address: huiyu@nwpu.edu.cn (H. Yu).
+https://doi.org/10.1016/j.physa.2019.122289
+0378-4371/© 2019 Elsevier B.V. All rights reserved.
+--- PAGE 2 ---
+2 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+Fig. 1. Trisecting-and-acting model [19,20].
+Many existing clustering methods assume that each object must be assigned to exactly one cluster, which results in
+the type of hard clustering, namely an object only belongs to one cluster. However, in many applications, clusters may
+not necessarily have clear and sharp boundaries [17], i.e. an object can be assigned to any cluster or two or more clusters
+in the same time. It is difficult to give a clear hard clustering result under the condition of incomplete or inaccuracy
+information. For example, in an interest network, a member may have multiple interests and it may belong to different
+clusters. If we deal with these datasets on hard clustering, it will lead to a higher error rate or decision risk. It shows that
+hard clustering methods may not sufficiently explain the relationship between an element and a cluster.
+Whether an element belongs to a cluster or not is determined by its position in the dataset. It might fully belong
+to one cluster, fully not belong to one cluster, belong to several clusters at the same time or as a noisy point. From this
+perspective, we may use three types to describe the relationship between an element and a cluster: belong-to, not belong-
+to, and ambiguous. In order to represent the three types of relationships, we adopt a notion of three-way clustering [18],
+as an alternative to conventional two-way clustering. Three-way clustering divides the whole discussing region into three
+parts: positive region (POS), negative region (NEG) and boundary region (BND). Different regions adopt different ways to
+manage respectively. For one cluster, if an object is in a positive region, we can make a decision of acceptance, namely it
+belongs to the cluster. If an object is in a negative region (NEG), we can make a decision of rejection, i.e. it does not belong
+to the cluster. If an object is in a boundary region, we do not make a decision immediately, namely non-commitment or
+deferment, until we have enough information about these problems to make a right judgement.
+The idea of three-way clustering originated from three-way decision [19,20]. Three-way decision is an extension of the
+commonly used binary-decision models. Three-way decision theory believes that people usually make decisions based on
+current available information and evidence, however, if the information is insufficient or weak, it might be impossible
+to make either a positive or a negative decision. Thus one may choose an alternative way to make a decision, namely
+neither yes or no, which is also called a deferment decision and requires further judgement. Therefore, the basic idea of
+three-way decision is to divide a universal set into three pair-wise disjoint regions and to make three types of decisions
+accordingly, as shown in Fig. 1. This tri-partition methodology provides flexible ways for complex problem solving and
+information processing [21,22]. The idea of three-way decision has been introduced into a variety of theoretical methods,
+like evidence theory [23,24] and fuzzy set [25–27]. The wide sense of three-way decision offers a new understanding and
+hence many new research branches have appeared like three-way decision support [28,29]. Three-way decision theory
+has also been widely used in many applications of uncertain information [30–32].
+Inspired by the idea from three-way decision, Yu [33] applied it to clustering and proposed the concept of three-way
+clustering. The concept of three-way clustering was also considered by Lingras [34,35] and Yao et al. [36,37]. Recently
+Afridi et al. [38] constructed a three-way clustering approach for handling missing data. Wang et al. [17] put forward
+a general framework of three-way clustering (CE3) in view of erosion and dilation from mathematical morphology. Yu
+et al. [18,39] also developed new clustering approaches for more uncertain situations such as dynamic, incomplete data
+or multi-source data.
+DBSCAN [40], or density-based spatial clustering of applications with noise, is a typical successful density-based
+clustering method. It can not only find arbitrary shape clusters and handle noise points, but also can detect the number
+of clusters naturally. However, a crucial problem with DBSCAN is that it faces the challenge of finding clusters with
+different densities using a global density threshold [41–43]. To overcome this, many variants of DBSCAN and methods
+have been proposed. For example, OPTICS [44] sorts the neighborhood points according to the density, and then draws
+a ‘‘reachability’’ plot to find clusters of different densities. SNN based clustering [45] uses the number of shared nearest
+neighbors between two points in replace of distance measure in DBSCAN, thus can ignore objects’ true density distribution.
+DP [46,47] can determine cluster centers and group objects based on local density and relative distance.
+In this paper, we apply three-way decision theory and put forward a Three-Way clustering method based on an
+Improved DBSCAN algorithm, named 3W-DBSCAN for short. Not like a single set to express a cluster in two-way clustering,
+we represent a three-way cluster by a pair of nested sets. We also use a typical representative density-based clustering
+method DBSCAN [40] and improve its similarity calculation to cluster the dataset. It can find the number of clusters based
+on the estimated density distribution and has several advantages. Firstly, it can discover clusters of different sizes and
+--- PAGE 3 ---
+H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289 3
+Fig. 2. Representation of two-way clustering and three-way clustering.
+shapes. Secondly, it need not know the number of clusters in advance. Thirdly, with a global density threshold, it can
+identify clusters with varied densities.
+The organization of the rest paper is as follows. Section 2 presents the proposed algorithm 3W-DBSCAN including the
+clustering representation by three-way decision, improved DBSCAN and three-way clustering processing. In Section 3, we
+empirically evaluate the performance of 3W-DBSCAN. Section 4 is the conclusion of this paper.
+2. The 3W-DBSCAN method
+2.1. Clustering representation by three-way decision
+Suppose C = {C1, C2, . . . ,Ck} is a family of clusters, and V = {x1, x2, . . . ,xn} is a finite non-empty universe of objects.
+xi is an object which has h attributes, xi = (xi1, xi2, . . . ,xih), where xij denotes the value of jth attribute of object xi,
+i = {1, 2, . . . ,n} and j = {1, 2, . . . ,h}.
+Definition 1. A cluster is depicted by a pair of nested sets [33]:
+Ci = [Ci, Ci] (1)
+where Ci is the lower bound of the cluster and Ci is the upper bound of the cluster, Ci ⊆ Ci ⊆ V . The set Ci, Ci − Ci and
+V − Ci can form into three regions of cluster Ci as positive, boundary and negative regions, respectively. The three-way
+clustering representation is given as:
+POS(Ci) = Ci
+BND(Ci) = Ci − Ci
+NEG(Ci) = V − Ci
+(2)
+Objects in POS(Ci) definitely belong to the cluster Ci, objects in NEG(Ci) definitely do not belong to the cluster Ci. Objects
+in BND(Ci) imply that their relationship with clusters is ambiguous, we need more information to make judgements and
+thus they may belong to one or more clusters.
+In this paper, the subsets of cluster satisfy the following conditions.
+(a) POS(Ci) ̸= ∅
+(b) POS(Ci)
+⋂
+BND(Ci) = ∅
+(c) BND(Ci)
+⋂
+NEG(Ci) = ∅
+(d) POS(Ci)
+⋂
+POS(Cj) = ∅, i ̸= j
+(e) POS(Ci)
+⋃
+BND(Ci)
+⋃
+NEG(Ci) = V
+Under the three-way representation of a cluster, the family of clusters can be depicted by interval sets as:
+C = {[C1, C1], [C2, C2], . . . ,[Ck, Ck]} (3)
+Following is an example to simply demonstrate the difference between two-way clustering and three-way clustering.
+Given a dataset including two concentrated areas and six relatively discrete points, if a traditional two-way clustering
+algorithm is used, as shown in Fig. 2(a), six discrete points p1, p2, . . ., p6 will be strictly assigned to each cluster. However,
+focus on p3 and p4, intuitively, their distance to C1 and C2 are almost the same and it seems unreasonable to assign them
+to either one of the two clusters, it may be more appropriate to regard them as overlapping areas between C1 and C2.
+Besides, p1 and p2 are relatively close to C1, but they are far from the core of C1, namely their relationship with C1 is not
+as strong as the points in core of C1, the same situation also happens on p5 and p6. If we apply three-way decision method
+on the same dataset and can obtain the three-way clustering result in Fig. 2(b), in which six discrete points are assigned
+--- PAGE 4 ---
+4 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+Fig. 3. Original and scaling data distribution.
+to the boundary region BND of each cluster. It means that their relationship with clusters is loose, not as strong as the
+points in positive regions POS(C1) and POS(C2). They may belong to one cluster or may be in overlapping areas between
+different clusters. This representation is more in line with people’s cognition than two-way clustering.
+2.2. DBSCAN clustering algorithm
+As one of the successful density-based clustering algorithm, DBSCAN can find several clusters based on the estimated
+density distribution. It need not know the cluster number in advance and can find shaped clusters. The basic idea
+of DBSCAN is illustrated as follows. Starting from a random unvisited point p, DBSCAN retrieves all points in the ϵ-
+neighborhood of p, where ϵ is the maximum radius of the neighborhood from p. The density threshold MinPts is the
+minimum number of points required to form a dense region. Point p is a core point if at least MinPts points are within
+distance ϵ. If p is a core point, all points in its ϵ-neighborhood are classified into the same cluster as p. For each point in the
+cluster, DBSCAN finds all density-reachable points and adds them into the same cluster. If a point q is density-reachable
+from other core points, but its ϵ-neighborhood is less than MinPts, then it is the border point belonging to the cluster as
+well. If a point is not reachable from any other point, it is a noisy point or outlier. DBSCAN achieves the clustering process
+by extracting clusters sequentially. Repeating this process until no new density-reachable points are found, a final cluster
+is obtained. DBSCAN divides a set of points into three types: core point with high density, border point with low density
+and noise. The definition of three types of points is shown as follows.
+Definition 2 (Three Types of Points ). Given any two points x and y, d(x, y) is the similarity between them, Γϵ (x) is the
+ϵ-neighborhood of x, where Γϵ (x) = {y ∈ V |d(x, y) ≤ ϵ}. ρ(x) = |Γϵ (x)| is the density value of x. Three types of points are
+depicted by the type function S( x), it is defined as:
+S(x) =
+⎧
+⎨
+⎩
+1 core point with ρ(x) ≥ MinPts
+0 border point with 1 < ρ (x) < MinPts
+−1 noise with ρ(x) = 1
+(4)
+2.3. Improved similarity calculation in DBSCAN
+As mentioned above, DBSCAN has several advantages, however, it cannot find clusters with varied densities. Many
+efforts have been done to improve it [41,48]. Recently, Zhu et al. [49] provided a multi-dimensional distance scaling
+method (DScale), which can be regarded as a data pre-processing technique. Its basic idea is scaling the computed distance
+between every two points, which causes the estimated density of each scaled point to change. It also has been proved
+that in case of a single threshold, DScale allows an existing density-based cluster algorithm to find all clusters with varied
+densities [49].
+Inspired by this idea, we improve the similarity calculation in traditional DBSCAN, so that it can identify clusters of
+different densities. The improved DBSCAN is defined as follows.
+Definition 3 (The Scaling Function ). For a dataset V = { x1, x2, . . . ,xn} of n objects, each object has h features, xi ∈ Rh.
+Given a computed similarity matrix D = [ d(x, y)], dmax = maxx,y∈V d(x, y). The scaling function is defined as:
+r(x) = ( |Γη(x, d)|
+n
+)
+1
+h × dmax
+η
+(5)
+--- PAGE 5 ---
+H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289 5
+where the similarity matrix D can be obtained by Euclidean distance, Γη(x, d) is the η-neighborhood of x, Γη(x, d) = {y ∈
+V |d(x, y) ≤ η}, η ∈ (0, 1) is a parameter of the size of neighborhood radius. The scaling function of Eq. (5) is to make the
+data approximately uniformly distributed in the scaled η-neighborhood.
+Definition 4 (The Scaled Distance ). Given a computed distance d(x, y), the scaled distance d′(x, y) is obtained by the scaling
+function r(x) and defined as:
+d′(x, y) =
+{
+d(x, y) × r(x) if y ∈ Γη(x, d)
+(d(x, y) − η) × dmax−η×r(x)
+dmax−η + η × r(x) if y ∈ V \Γη(x, d) (6)
+The scaled distance is computed in two cases, when y ∈ Γη(x, d), Eq. (6) is a linear scaling, hence the number of points in
+Γη(x, d) remains the same as in Γη∗r(x)(x, d′), otherwise when y ∈ V \ Γη(x, d), Eq. (6) is actually a min–max normalization
+to keep the same sample rank.
+The mechanism of scaling is the same to density-ratio based clustering [41]. We take a simple example to illustrate it,
+Fig. 3(a) is a mixture of three Gaussian distributions from Ref. [41], where C1 and C2 are relatively with high density and C3
+is with low density. Fig. 3(b) shows the new distribution on scaled data of (a), we can find that the density gaps between
+three clusters are reduced and hence DBSCAN can detect three clusters using a single threshold. In summary, the function
+of Eqs. (5)–(6) is to make the data approximately uniform according to the bandwidth ( η), after transformation, the densest
+areas in the original data are expanded in the scaled data, while the sparest areas are shrunk. As a result, different cluster
+modes are more distanced from each other, and the gap between different clusters’ boundaries are enlarged in the scaled
+data, therefore based on the scaled data, DBSCAN allows for a single threshold to find clusters with varied densities.
+From above definition, we can obtain the scaled similarity matrix D′ = [ d′(x, y)] by Eq. (6). DBSCAN is then
+implemented on the basis of D′ to find clusters. Its result is represented as C = { C1, . . . ,Ci, . . . ,Ck} ⋃
+No(C ), k is the
+number of clusters identified by DBSCAN, No(C ) includes all noisy objects from DBSCAN clustering result.
+2.4. Three-way clustering processing
+Not like a single set used in two-way clustering, 3W-DBSCAN applies a pair of sets Ci = [ Ci, Ci] to depict a cluster.
+Therefore, after obtaining clustering result by Improved DBSCAN, three-way clustering processing is then implemented,
+which mainly consists of three strategies: (1) Determine the positive and boundary region of Ci, (2) Expand the boundary
+region of Ci and determine them in the overlapping regions whether or not and (3) Get more information to assign noisy
+points to boundary region of clusters.
+Strategy 1: Determine the positive and boundary region of Ci
+For each cluster Ci acquired by improved DBSCAN, in order to construct the positive region POS(Ci) and the boundary
+region BND(Ci), the basic idea is to compare objects’ density with the threshold MinPts. If an object x belongs to a high
+density field of Ci, i.e. S(x) = 1 in Eq. (4), thus it is a typical element of Ci and naturally should be assigned to the positive
+region. If an object x is in a low density field, i.e. S(x) = 0 in Eq. (4), it is possible that it may belong to one or more
+clusters, x will be assigned to the boundary region. Therefore, the positive and boundary region of Ci can be constructed
+as follows:
+POS(Ci) = {x|S(x) = 1, x ∈ Ci}
+BND(Ci) = {x|S(x) = 0, x ∈ Ci} (7)
+Actually, for a cluster Ci, POS(Ci) is the set of all core points and BND(Ci) is the set of all border points.
+Strategy 2: Process overlapping objects to expand boundary regions
+In Strategy 1, border objects are assigned to single corresponding boundary region, but we need to further deal with
+them because they may be the members of other clusters, i.e., overlapping objects. The same situation may also happen
+at noisy points. The following strategy is adopted: for one point x satisfying S(x) = 0 or S(x) = − 1, if a neighbor of x in
+ϵ-neighborhood size belongs to one other cluster Ci, x is considered as an overlapping object and then add x to the set
+BND(Ci). Hence the boundary region BND(Ci) is updated as:
+BND(Ci) = BND(Ci)
+⋃
+{(x | Ci ∩ Γϵ (x) ̸= ∅ )} (8)
+Strategy 3: Get more information to assign remaining noisy points to boundary region of clusters.
+For the remaining noisy points unassigned in Strategy 2, we want to further process and assign them to the proper
+clusters. Therefore, for each noisy point x, we adopt the following strategy to tackle with it. Set AllPOS denote the set of all
+core objects, i.e., AllPOS = ⋃k
+i=1 POS(Ci). The nearest core neighbor of x, represented as NCN(x), is measured by satisfying
+the minimum distance from x to another point in the set AllPOS, as shown in Eq. (9).
+NCN(x) = y ← arg min
+y∈AllPOS
+d(x, y), S(x) = −1 (9)
+Then the noise x is assigned to the boundary region of the same cluster as its nearest core neighbor NCN(x):
+ifNCN(x) ∈ POS(Ci), thenBND(Ci) = BND(Ci)
+⋃
+x (10)
+--- PAGE 6 ---
+6 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+Fig. 4. The flowchart of 3W-DBSCAN.
+Table 1
+Data properties of 10 datasets.
+Type Dataset Data size Dimension Clusters Source
+Synthetic dataset
+3L 560 2 3 [49]
+4C 1250 2 4 [49]
+S1 5000 2 15 [50]
+UCI dataset
+IRIS 150 4 3 [51]
+Glass 214 9 6 [51]
+Seeds 210 7 3 [51]
+Shape dataset
+Pathbased 300 2 3 [48]
+Aggregation 788 2 7 [52]
+Flame 240 2 2 [52]
+Compound 399 2 6 [48]
+Fig. 4 shows the flowchart of 3W-DBSCAN. The whole procedure of 3W-DBSCAN is summarized in Algorithm 1 and
+the detailed time complexity is analyzed: Line 1 is to calculate the distance matrix which needs O( n2), in Line 2, since
+the algorithm needs to manage with each point, the basic complexity is O( n2). The DBSCAN algorithm in Line 3 also
+--- PAGE 7 ---
+H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289 7
+needs O(n2) in the worst case. Suppose n1 is the number of clustered samples and n2 is the number of noise after running
+DBSCAN, i.e., n1 + n2 = n. Line 4 needs to scan the value of type function for n1 points, it costs O(n1), the complexity of Line
+5 is O(n) at most. In Line 6, to find the nearest core neighbor, the algorithm needs O(n1n2) mostly. Generally, improved
+DBSCAN needs O(n2) and three-way clustering processing costs O(n1n2), O(n1n2) < O(n2), hence the time complexity of
+3W-DBSCAN is O(n2).
+Algorithm 1: The proposed algorithm 3W-DBSCAN
+Input : A dataset V = {x1, x2, . . . ,xn}
+Output: C = {[C1, C1], [C2, C2], . . . ,[Ck, Ck]}
+1 Calculate the distance matrix D;
+2 Obtain the scaled distance matrix D’ using Eqs. (5)–(6);
+3 Based on D’, use DBSCAN algorithm to cluster as C = {C1, C2, . . .} ⋃
+No(C ) ;
+4 Determine the positive and boundary region using Eq. (7);
+5 Process overlapping objects to expand boundary regions using Eq. (8);
+6 Assign noises to boundary region of clusters using Eqs. (9)–(10);
+3. Experimental evaluation
+3.1. Datasets
+In this section, we present experiments to evaluate the effectiveness of 3W-DBSCAN using 3 synthetic datasets, 3
+UCI datasets and 4 shape datasets. Table 1 shows the properties of 10 datasets. Note that among synthetic datasets,
+3L is a 2-dimensional data containing three elongated clusters and 4C contains four clusters including three Gaussian
+clusters and one elongated cluster. S1 is with 5000 instances and 15 Gaussian clusters. IRIS, Glass and Seeds are all
+with multidimensional attributes. Pathbased is a shaped dataset where two Gaussian and circular clusters are within
+connections, Flame is also featured with the connected distribution. Aggregation contains seven circular clusters with
+similar densities. Compound creates a challenge for clustering algorithms as it is formed by different shapes and
+densities [48].
+3.2. Evaluation measures
+We use three traditional indices including Accuracy (Acc) [17], F-measure ( F1) [49] and NMI [53] to evaluate the
+performance of 3W-DBSCAN. The brief introduction of three indices is given below.
+1. Accuracy ( Acc)
+Acc =
+k∑
+i=1
+ni
+n
+(11)
+where ni is the number of correct objects which are predicted by clustering algorithm comparing with true clusters. n is
+the total number of objects. A higher Acc indicates a better clustering result.
+2. F − measure(F1)
+F1 [49] is computed by the harmonic mean of precision score P and recall score R, and the overall F1 is the unweighted
+average over all clusters.
+F1 = 1
+k
+×
+k∑
+i=1
+2 × Pi × Ri
+Pi + Ri
+(12)
+where k is the number of true clusters. The higher the value of F1 is, the better the classification performance is.
+3. NMI
+NMI [53] is commonly used in community detection to measure the similarity of two communities, as well as in
+overlapping clustering. Given two clustering results X and Y, NMI is calculated as:
+NMI = I(X : Y )
+max(H(X ), H(Y ))
+(13)
+where H(X ) (H(Y )) is the entropy of the random variable X (Y ) related to the partition, I(X : Y ) is the mutual information
+and derived based on H(X ) and H(Y ). Detailed formula can be seen in [53]. The higher the value of NMI is, the more
+similar X and Y is.
+--- PAGE 8 ---
+8 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+Table 2
+Different clustering performance on 10 datasets.
+Dataset CE3-kmeans 3W-DBSCAN CE3-kmeans 3W-DBSCAN DScale-DBSCAN
+Lower bound C Upper bound C
+3L
+ACC 0.5014 0.6982 0.5675 0.9411 0.8875
+NMI 0.1275 0.4691 0.1541 0.7163 0.5582
+F1 0.4939 0.7628 0.5681 0.9189 0.8964
+4C
+ACC 0.5536 0.7592 0.6267 0.9232 0.8784
+NMI 0.2743 0.5642 0.3097 0.7050 0.5668
+F1 0.6148 0.7896 0.6574 0.9072 0.8840
+S1
+ACC 0.7515 0.9450 0.9102 0.9958 0.9762
+NMI 0.6686 0.9019 0.8707 0.9800 0.9130
+F1 0.8108 0.9711 0.8845 0.9950 0.9863
+IRIS
+ACC 0.7932 0.7200 0.8543 0.9800 0.8867
+NMI 0.5240 0.5578 0.6247 0.8124 0.5928
+F1 0.8154 0.8273 0.8476 0.9555 0.9289
+Glass
+ACC 0.4311 0.4673 0.4954 0.4860 0.4673
+NMI 0.1123 0.1918 0.1035 0.1506 0.1722
+F1 0.3766 0.3783 0.3786 0.3885 0.3675
+Seeds
+ACC 0.8451 0.4524 0.8928 0.9429 0.7524
+NMI 0.5462 0.2974 0.5818 0.7009 0.3393
+F1 0.8657 0.6157 0.8809 0.9252 0.8426
+Pathbased
+ACC 0.7268 0.8767 0.7685 0.9933 0.9767
+NMI 0.4617 0.7548 0.4474 0.8861 0.8830
+F1 0.7327 0.9324 0.7320 0.9775 0.9816
+Aggregation
+ACC 0.7856 0.9365 0.7913 1.0000 1.0000
+NMI 0.6677 0.9324 0.6688 0.9724 0.9114
+F1 0.7389 0.9788 0.7372 0.9916 1.0000
+Compound
+ACC 0.6024 0.9098 0.6403 0.9424 0.9373
+NMI 0.6067 0.8300 0.5559 0.8456 0.8395
+F1 0.5781 0.5835 0.8964 0.9163 0.9174
+Flame
+ACC 0.8400 0.8542 0.8484 1.0000 0.9708
+NMI 0.4505 0.6674 0.4505 0.9488 0.7863
+F1 0.8385 0.9093 0.8432 0.9927 0.9804
+3.3. Performance of 3W-DBSCAN
+We compare the performance of 3W-DBSCAN with the newly proposed CE3-kmeans [17] and DScale-DBSCAN [49]
+clustering algorithms, in which DScale-DBSCAN uses DScale for data processing and then implements DBSCAN to cluster.
+We do not choose other clustering algorithms because CE3-kmeans has compared the clustering effect with HCM [54],
+SC [55], FCM [56], RFCM [57], ECM [58], RECM [59] and DScale-DBSCAN has compared with DBSCAN [40], OPTICS [44]
+and DP [46]. We compute three indices values by using lower and upper bounds of three-way clustering respectively,
+i.e., C = [ C, C], positive regions of all clusters comprise the lower bound, while the union of positive and boundary
+regions forms the upper bound. Considering that DScale-DBSCAN is a two-way clustering method, its clustering result is
+regarded as the performance on upper bound in three-way clustering. Besides, since the result of CE3-kmeans is different
+in every experiment, its overall performance is measured by an average value in 100 times runs. The clustering evaluation
+is provided in Table 2. The best performances in lower bound and upper bound for each dataset are highlighted in bold.
+As shown in Table 2, both 3W-DBSCAN and CE3-kmeans give a lower Acc on lower bound and a higher Acc on upper
+bound for almost all datasets, as well as NMI and F1. The reason can be attributed to the fact that each cluster is divided into
+a lower bound and an upper bound, these two sets are obtained by shrinking and expanding some elements respectively
+based on two-way clustering. It is reasonable that the clustering performance in upper bound is better than that in lower
+bound. Additionally, most Acc and NMI values obtained by DScale-DBSCAN are between the values on lower bound and
+upper bound by 3W-DBSCAN. This is because that based on the clustering result by DBSCAN, 3W-DBSCAN shrinks each
+cluster by picking out core objects, which constitutes the lower bound. Then 3W-DBSCAN expands each cluster by further
+processing with border and noise elements, which constitutes the upper bound. This process will improve the clustering
+performance.
+In terms of algorithm, from Table 2, we can find that 3W-DBSCAN gives better performance than CE3-kmeans
+and DScale-DBSCAN in most cases, especially in synthetic and shape datasets, which demonstrates the superiority of
+3W-DBSCAN. Take 4C and Compound as examples to illustrate the clustering performance in Figs. 5–6, note that the
+--- PAGE 9 ---
+H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289 9
+Fig. 5. Four different schematic diagram of 4C.
+color of class is different because class labels in four graphs are not the same. As we can see, owing to the intrinsic
+limitation of k-means, 3W-DBSCAN can detect clusters with arbitrary shape more accurately than CE3-kmeans. In addition,
+3W-DBSCAN also has a relatively good performance on Compound, which has a distribution of different densities, it shows
+the ability of 3W-DBSCAN to handle with clusters with varied densities. Compared with DScale-DBSCAN, 3W-DBSCAN is
+capable to handle border and noise points, hence it is superior to DScale-DBSCAN to some extents.
+However, we can also find that in the dataset IRIS, CE3-kmeans gives a higher Acc in lower bound but a lower F1
+and NMI in upper bound than 3W-DBSCAN, a similar conclusion can be drawn in the datasets Seeds. In order to explain
+this phenomenon, we visualize the IRIS dataset and further analyze it. Note that IRIS has four features and Fig. 7 is the
+visualization of IRIS in the third and fourth dimensions. From Fig. 7(a), we can see that most points in truth cluster
+C2 are in the green slide elliptical area. In Fig. 7(c), CE3-kmeans can find almost all points of C2 and assign them into
+positive regions, while the positive region detected by 3W-DBSCAN (the dotted green elliptical area in Fig. 7(d)) only
+includes partial points of C2, hence it is reasonable that CE3-kmeans gives a higher Acc than 3W-DBSCAN in lower bound.
+Furthermore, in the dotted green elliptical area of Fig. 7(c), CE3-kmeans assigns several objects into wrong clusters during
+the clustering process of C2 and C3, leading to a lower NMI and F1 than 3W-DBSCAN. For the clustering performance of
+IRIS in upper bound, 3W-DBSCAN takes more objects into consideration (the solid green elliptical area in Fig. 7(d)), so
+the results of three evaluation indices are better than CE3-kmeans. As to the result of DScale-DBSCAN, it is better than
+CE3-kmeans but worse than 3W-DBSCAN in upper bound region. From Fig. 7(b), we can see that since the result of
+DScale-DBSCAN has many noisy points, so it cannot get a better performance than 3W-DBSCAN. It performs better than
+CE3-kmeans because CE3-kmeans assigns several objects into wrong clusters.
+As seen in the Pathbased, Aggregation and Compound datasets in Table 2, 3W-DBSCAN gives a higher Acc and NMI
+than DScale-DBSCAN in upper bound, while DScale-DBSCAN gives a higher F1 than 3W-DBSCAN. The reason is that there
+--- PAGE 10 ---
+10 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+Fig. 6. Four different schematic diagram of Compound.
+exist overlapping regions in the result of 3W-DBSCAN. Take Aggeration as an example. Fig. 8(a) is the original distribution
+of Aggeration dataset. It has two attributes and can be divided into seven clusters. As shown the elliptical area depicted
+by green solid lines in Fig. 8(d), we can find that the connected areas between C4 and C5, C2 and C3 are relatively compact,
+hence objects in these areas are regarded as overlapping elements belonging to two clusters simultaneously. While from
+the point of the true dataset (Fig. 8(a)), they just belong to one cluster strictly and thus they are misclassified by 3W-
+DBSCAN. Although the precision rate of 3W-DBSCAN is improved, the recall rate is declined, which finally leads to a slight
+decrease of F1. Actually, as shown in Fig. 9 (the local enlarged drawing of overlapping clusters in Fig. 8(d)), we believe
+that to assign these points (the areas marked with blue rectangle lines in Fig. 9) into overlapping clusters is reasonable
+according to the visualization, although this assignment causes F1 to decrease. The phenomenon is also consistent with
+human’s cognitive thinking.
+Besides, we have evaluated the parameter η for improved DBSCAN, Fig. 10 shows the best F1 on upper bound for five
+datasets when η ranges from 0.1 to 0.5. It shows that the scaling effect is different from different datasets. However,
+generally, when η is set at around [0.15, 0.3], it is more likely to get the best clustering performance.
+4. Conclusion
+In many applications of clustering, there exist objects whose relationship with clusters is ambiguous because they
+may belong to one or more clusters. To address the problem this paper provides a Three-Way clustering method based
+on an improved DBSCAN algorithm (3W-DBSCAN). Instead of a single set to express a cluster in two-way clustering,
+each cluster is described by a pair of nested sets called lower bound and upper bound respectively. It is consistent
+with human cognitive thinking and can get better results. By conducting experiments on 10 datasets, we compare the
+--- PAGE 11 ---
+H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289 11
+Fig. 7. Four different schematic diagram of IRIS. Note in the lower left quarter of (c) and (d), the seemingly overlapping sample between the positive
+and boundary regions is actually two samples which have the same feature values.
+clustering performance on Accuracy ( Acc), F-measure ( F1) and NMI evaluation indices with two new approaches CE3-
+kmeans and DScale-DBSCAN. The experimental results show that 3W-DBSCAN gives better performance in most cases,
+besides, using the visualization of datasets, the reason why 3W-DBSCAN fails to give good clustering results in some cases
+is also discussed.
+The following two topics will be studied as future research. First, the present study extracts the results of a hard
+clustering algorithm into three-way clusters, so the proposed method will depend on the performance of hard clustering
+algorithm to some extents, how to construct three-way clusters from scratch is a promising study. Second, the parameter
+η in 3W-DBSCAN has a great impact on clustering results, it is necessary to study an operability method to obtain it. What
+is more, the relationship between η and ϵ will be an interesting topic.
+Acknowledgments
+Authors greatly appreciate the reviewers’ suggestions and the editor’s encouragement. Authors greatly appreciate Dr.
+Pingxin Wang for sharing their CE3-kmeans algorithm codes and thanks for the valuable comment of Dr. Yiyu Yao.
+This research was supported in part by Aviation Science Fund of China (Grant No. 2016ZC53028), Seed Foundation of
+Innovation and Creation for Graduate Students in Northwestern Polytechnical University, China (2019) (Grant ZZ2019030),
+and National Natural Science Foundation of China (Grant No. 61872297).
+--- PAGE 12 ---
+12 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+Fig. 8. Four different schematic diagram of Aggeration.
+Fig. 9. The overlap region of Aggeration.
+--- PAGE 13 ---
+H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289 13
+Fig. 10. F1 on four datasets with different η values.
+References
+[1] Chunfeng Lian, Su Ruan, Thierry Denoeux, Hua Li, Pierre Vera, Joint tumor segmentation in PET-CT images using co-clustering and fusion based
+on belief functions, IEEE Trans. Image Process. 28 (2) (2018) 755–766.
+[2] Changqing Zhang, Huazhu Fu, Qinghua Hu, Xiaochun Cao, Yuan Xie, Dacheng Tao, Dong Xu, Generalized latent multi-view subspace clustering,
+IEEE Trans. Pattern Anal. Mach. Intell. (2018).
+[3] Pengfei Jiao, Wei Yu, Wenjun Wang, Xiaoming Li, Yueheng Sun, Exploring temporal community structure and constant evolutionary pattern
+hiding in dynamic networks, Neurocomputing 314 (2018) 224–233.
+[4] Meisam Akbarzadeh, Sayed Farzin Salehi Reihani, Keivan Aghababaei Samani, Detecting critical links of urban networks using cluster detection
+methods, Physica A 515 (2019) 288–298.
+[5] Chaobo He, Yong Tang, Hai Liu, Xiang Fei, Hanchao Li, Shuangyin Liu, A robust multi-view clustering method for community detection combining
+link and content information, Physica A 514 (2019) 396–411.
+[6] Gaogao Dong, Lixin Tian, Ruijin Du, Min Fu, H Eugene Stanley, Analysis of percolation behaviors of clustered networks with partial
+support–dependence relations, Physica A 394 (2014) 370–378.
+[7] Hui Yu, Kui-Tao Mao, Jian-Yu Shi, Hua Huang, Zhi Chen, Kai Dong, Siu-Ming Yiu, Predicting and understanding comprehensive drug-drug
+interactions via semi-nonnegative matrix factorization, BMC Syst. Biol. 12 (1) (2018).
+[8] S. Moshfegh, A. Ashouri, S. Mandavifar, J. Vahedi, Integrable-chaos crossover in the spin-1/2 XXZ chain with cluster interaction, Physica A 516
+(2019) 502–508.
+[9] Pamela Minicozzi, Fabio Rapallo, Enrico Scalas, Francesco Dondero, Accuracy and robustness of clustering algorithms for small-size applications
+in bioinformatics, Physica A 387 (25) (2008) 6310–6318.
+[10] Shuai Shao, Xuqing Huang, H Eugene Stanley, Shlomo Havlin, Robustness of a partially interdependent network formed of clustered networks,
+Phys. Rev. E 89 (3) (2014) 032812.
+[11] Emre Güngör, Ahmet Özmen, Distance and density based clustering algorithm using Gaussian kernel, Expert Syst. Appl. 69 (2017) 10–20.
+[12] Jianhua Jiang, Yujun Chen, Dehao Hao, Keqin Li, DPC–LG: Density peaks clustering based on logistic distribution and gravitation, Physica A 514
+(2019).
+[13] Yangli ao Geng, Qingyong Li, Rong Zheng, Fuzhen Zhuang, Ruisi He, Naixue Xiong, RECOME: A new density-based clustering algorithm using
+relative KNN kernel density, Inform. Sci. 436–437 (2018) 13–30.
+[14] Ye Zhu, Kai Ming Ting, Mark J. Carman, Grouping points by shared subspaces for effective subspace clustering, Pattern Recognit. 83 (2018)
+230–244.
+[15] Kai Ming Ting, Ye Zhu, Mark Carman, Yue Zhu, Zhi-Hua Zhou, Overcoming key weaknesses of distance-based neighbourhood methods using a
+data dependent dissimilarity measure, in: Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data
+Mining, KDD ’16, ACM, 2016, pp. 1205–1214.
+[16] Bo Wei, Yong Deng, A cluster-growing dimension of complex networks: From the view of node closeness centrality, Physica A 522 (2019)
+80–87.
+[17] Pingxin Wang, Yiyu Yao, Ce3: A three-way clustering method based on mathematical morphology, Knowl.-Based Syst. 155 (2018) 54–65.
+[18] Hong Yu, Xincheng Wang, Guoyin Wang, Xianhua Zeng, An active three-way clustering method via low-rank matrices for multi-view data,
+Inform. Sci. (2018).
+[19] Yiyu Yao, Three-way decision and granular computing, Internat. J. Approx. Reason. 103 (2018) 107–123.
+[20] Cong Gao, Yiyu Yao, Actionable strategies in three-way decisions, Knowl.-Based Syst. 133 (2017) 141–155.
+[21] Haobin Shi, Zhiqiang Lin, Shuge Zhang, Xuesi Li, Kao-Shing Hwang, An adaptive decision-making method with fuzzy Bayesian reinforcement
+learning for robot soccer, Inform. Sci. 436 (2018) 268–281.
+[22] Haobin Shi, Xuesi Li, Kao-Shing Hwang, Wei Pan, Genjiu Xu, Decoupled visual servoing with fuzzy Q-learning, IEEE Trans. Ind. Inf. (2016).
+[23] Yukun Dong, Jiantao Zhang, Zhen Li, Yong Hu, Yong Deng, Combination of evidential sensor reports with distance function and belief entropy
+in fault diagnosis, Int. J. Comput. Commun. Control 14 (3) (2019) 293–307.
+[24] Yutong Song, Yong Deng, A new method to measure the divergence in evidential sensor data fusion, Int. J. Distrib. Sensor Netw. 15 (4) (2019)
+http://dx.doi.org/10.1177/1550147719841295.
+[25] Decui Liang, Zeshui Xu, Dun Liu, Three-way decisions with intuitionistic fuzzy decision-theoretic rough sets based on point operators, Inform.
+Sci. 375 (2017) 183–201.
+[26] Bao Qing Hu, Three-way decision spaces based on partially ordered sets and three-way decisions based on hesitant fuzzy sets, Knowl.-Based
+Syst. 91 (2016) 16–31.
+--- PAGE 14 ---
+14 H. Yu, L. Chen, J. Yao et al. / Physica A 535 (2019) 122289
+[27] Yangxue Li, Yong Deng, Generalized ordered propositions fusion based on belief entropy, Int. J. Comput. Commun. Control 13 (5) (2018)
+792–807.
+[28] Bingzhen Sun, Weimin Ma, Binjiang Li, Xiaonan Li, Three-way decisions approach to multiple attribute group decision making with linguistic
+information-based decision-theoretic rough fuzzy set, Internat. J. Approx. Reason. 93 (2018) 424–442.
+[29] JingTao Yao, Nouman Azam, Web-based medical decision support systems for three-way medical decision making with game-theoretic rough
+sets, IEEE Trans. Fuzzy Syst. 23 (1) (2015) 3–15.
+[30] Sebastián Maldonado, Georg Peters, Richard Weber, Credit scoring using three-way decisions with probabilistic rough sets, Inform. Sci. (2018).
+[31] Yan Zhang, JingTao Yao, Game theoretic approach to shadowed sets: A three-way tradeoff perspective, Inform. Sci. (2018).
+[32] Muhammad Taimoor Khan, Nouman Azam, Shehzad Khalid, JingTao Yao, A three-way approach for learning rules in automatic knowledge-based
+topic models, Int. J. Approx. Reason. 82 (2017) 210–226.
+[33] Hong Yu, Cong Zhang, Guoyin Wang, A tree-based incremental overlapping clustering method using the three-way decision theory, Knowl.-Based
+Syst. 91 (2016) 189–203.
+[34] P. Lingras, C. West, Interval set clustering of web users with rough K-means, J. Intell. Inf. Syst. 23 (1) (2004) 5–16.
+[35] Pawan Lingras, Georg Peters, Rough clustering, Wiley Interdiscip. Rev. Data Min. Knowl. Discov. 1 (1) (2011) 64–72.
+[36] Lin Yang, Kaiyan Hou, A method of incomplete data three-way clustering based on density peaks, in: 6th International Conference on
+Computer-Aided Design, Manufacturing, Modeling and Simulation, Cdmms 2018, in: AIP Conference Proceedings, vol. 1967, 2018.
+[37] Jie Zhou, Zhihui Lai, Can Gao, Xiaodong Yue, Waikeung Wong, Rough-Fuzzy clustering basedon two-stage three-way approximations, IEEE
+Access 6 (2018) 27541–27554.
+[38] Mohammad Khan Afridi, Nouman Azam, Jing Tao Yao, Eisa Alanazi, A three-way clustering approach for handling missing data using GTRS,
+Internat. J. Approx. Reason. 98 (2018) 11–24.
+[39] Hong Yu, Peng Jiao, Yiyu Yao, Guoyin Wang, Detecting and refining overlapping regions in complex networks with three-way decisions, Inform.
+Sci. 373 (2016) 21–41.
+[40] Martin Ester, Hans-Peter Kriegel, Jörg Sander, Xiaowei Xu, et al., A density-based algorithm for discovering clusters in large spatial databases
+with noise, in: Kdd, Vol. 96, No. 34, 1996, pp. 226–231.
+[41] Ye Zhu, Kai Ming Ting, Mark J. Carman, Density-ratio based clustering for discovering clusters with varying densities, Pattern Recognit. 60
+(2016) 983–997.
+[42] Bo Chen, Kai Ming Ting, Takashi Washio, Ye Zhu, Local contrast as an effective means to robust clustering against varying densities, Mach.
+Learn. (2018) 1–25.
+[43] Qing Cheng, Xin Lu, Zhong Liu, Jincai Huang, Guangquan Cheng, Spatial clustering with density-ordered tree, Physica A 460 (2016) 188–200.
+[44] Mihael Ankerst, Markus M Breunig, Hans-Peter Kriegel, Jörg Sander, OPTICS: ordering points to identify the clustering structure, in: ACM Sigmod
+Record, Vol. 28, (2) ACM, 1999, pp. 49–60.
+[45] Levent Ertöz, Michael Steinbach, Vipin Kumar, Finding clusters of different sizes, shapes, and densities in noisy, high dimensional data, in:
+Proceedings of the 2003 SIAM International Conference on Data Mining, SIAM, 2003, pp. 47–58.
+[46] Alex Rodriguez, Alessandro Laio, Clustering by fast search and find of density peaks, Science 344 (6191) (2014) 1492–1496.
+[47] Jianhua Jiang, Dehao Hao, Yujun Chen, Milan Parmar, Keqin Li, GDPC: Gravitation-based density peaks clustering algorithm, Physica A 502
+(2018) 345–355.
+[48] Emre Gungor, Ahmet Ozmen, Distance and density based clustering algorithm using Gaussian kernel, Expert Syst. Appl. 69 (2017) 10–20.
+[49] Ye Zhu, Kai Ming Ting, Maia Angelova, A distance scaling method to improve density-based clustering, in: Pacific-Asia Conference on Knowledge
+Discovery and Data Mining, Springer, 2018, pp. 389–400.
+[50] Pasi Fränti, Sami Sieranoja, K-means properties on six clustering benchmark datasets, Appl. Intell. 48 (12) (2018) 4743–4759.
+[51] K. Bache, M. Lichman, UCI Machine Learning Repository, University of California,School of Information and Computer Sciences, Irvine, 2013,.
+[52] Juanying Xie, Hongchao Gao, Weixin Xie, Xiaohui Liu, Philip W Grant, Robust clustering by detecting density peaks and assigning points based
+on fuzzy weighted K-nearest neighbors, Inform. Sci. 354 (2016) 19–40.
+[53] Andrea Lancichinetti, Santo Fortunato, János Kertész, Detecting the overlapping and hierarchical community structure in complex networks,
+New J. Phys. 11 (3) (2009) 033015.
+[54] J. MacQueen, Some methods for classification and analysis of multivariate observations, in: Proc. Fifth Berkeley Sympos. Math. Statist. and
+Probability, Berkeley, Calif., 1965/66, Univ. California Press, Berkeley, Calif., 1967, pp. 281–297.
+[55] A.Y. Ng, Michael Jordan, Y. Weiss, On spectral clustering: Analysis and an algorithm, Adv. Neural Inf. Process. Syst. 2 (2001).
+[56] James C. Bezdek, Pattern recognition with Fuzzy objective function algorithms, Adv. Appl. Pattern Recognit. 22 (1171) (1981) 203–239.
+[57] Sushmita Mitra, Haider Banka, Witold Pedrycz, Rough-fuzzy collaborative clustering, IEEE Trans. Syst. Man Cybern. B 36 (4) (2006) 795–805.
+[58] Marie-Helene Masson, T. Denoeux, ECM: An evidential version of the fuzzy c-means algorithm, Pattern Recognit. 41 (4) (2008) 1384–1397.
+[59] Marie-Helene Masson, Thierry Denoeux, RECM: Relational evidential c-means algorithm, Pattern Recognit. Lett. 30 (11) (2009) 1015–1026.

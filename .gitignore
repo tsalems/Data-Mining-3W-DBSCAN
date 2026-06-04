@@ -6,6 +6,7 @@ env/
 # Bỏ qua thư mục cache của Python
 __pycache__/
 *.pyc
+*.docx
 
 # Bỏ qua các cấu hình của VS Code
 .vscode/
