@@ -44,6 +44,9 @@ def plot_threeway(ax, X, model, title):
 def plot_paper_comparison(X, y, tw_model, le3w_model, dataset_name):
     """Vẽ format 3 hình (a, b, c) ngang nhau cho các Hình"""
     fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Thêm tiêu đề lớn chứa tên dataset ở trên cùng
+    fig.suptitle(f"Clustering Results on {dataset_name.upper()} Dataset", fontsize=16, fontweight='bold', y=0.98)
     
     plot_original(axs[0], X, y, "(a) Original")
     plot_threeway(axs[1], X, tw_model, "(b) 3W-DBSCAN")
