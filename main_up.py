@@ -15,14 +15,20 @@ from visualize_up import plot_paper_comparison
 
 def main():
     data_dir = "data"
-    os.makedirs("results", exist_ok=True)
+    os.makedirs("results/LE3W", exist_ok=True)
     
     # 4 Dataset được dùng trong paper cho Figure 8, 9, 10, 11
     target_datasets = {
-        'Aggregation': {'eps_3w': 0.09, 'minPts': 5, 'eta': 0.20, 'k_le': 10, 'fig': 8},
-        'Compound': {'eps_3w': 0.13, 'minPts': 5, 'eta': 0.20, 'k_le': 16, 'fig': 9},
-        'Pathbased': {'eps_3w': 0.13, 'minPts': 5, 'eta': 0.20, 'k_le': 17, 'fig': 10},
-        'Flame': {'eps_3w': 0.15, 'minPts': 4, 'eta': 0.20, 'k_le': 11, 'fig': 11}
+        '3L': {'eps_3w': 0.19, 'minPts': 5, 'eta': 0.20, 'k_le': 15},
+        '4C': {'eps_3w': 0.07, 'minPts': 5, 'eta': 0.20, 'k_le': 20},
+        'S1': {'eps_3w': 0.05, 'minPts': 10, 'eta': 0.15, 'k_le': 30},
+        'Aggregation': {'eps_3w': 0.09, 'minPts': 5, 'eta': 0.20, 'k_le': 25},
+        'Compound': {'eps_3w': 0.13, 'minPts': 5, 'eta': 0.20, 'k_le': 20},
+        'Pathbased': {'eps_3w': 0.13, 'minPts': 5, 'eta': 0.20, 'k_le': 15},
+        'Flame': {'eps_3w': 0.15, 'minPts': 4, 'eta': 0.20, 'k_le': 10},
+        'IRIS': {'eps_3w': 0.70, 'minPts': 4, 'eta': 0.30, 'k_le': 10},
+        'Glass': {'eps_3w': 1.30, 'minPts': 4, 'eta': 0.20, 'k_le': 10},
+        'Seeds': {'eps_3w': 0.70, 'minPts': 4, 'eta': 0.20, 'k_le': 10}
     }
     
     table2_data = []
@@ -66,8 +72,8 @@ def main():
         table4_data.append(("", "alpha_star", a_star_3w, a_star_le))
         
         # Xuất biểu đồ so sánh giống Figure 8, 9, 10, 11
-        plot_paper_comparison(X, y, tw_dbscan, le3w_dbscan, ds_name, params['fig'])
-        print(f" -> Đã xuất ảnh: figures/Figure_{params['fig']}_{ds_name}.png")
+        plot_paper_comparison(X, y, tw_dbscan, le3w_dbscan, ds_name)
+        print(f" -> Đã xuất ảnh: figures/LE3W/Figure_{ds_name}.png")
 
     # --- IN BẢNG TABLE 2 ---
     print("\n" + "="*120)
@@ -93,7 +99,7 @@ def main():
         print(df_t4.to_string(index=False))
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filepath = os.path.join("results", f"Table4_LE3W_{timestamp}.xlsx")
+        filepath = os.path.join("results/LE3W", f"Table4_LE3W_{timestamp}.xlsx")
         
         df_export = df_t4.set_index([("Dataset", ""), ("Metric", "")])
         df_export.to_excel(filepath)

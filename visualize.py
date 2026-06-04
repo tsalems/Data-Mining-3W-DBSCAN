@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Tự động tạo thư mục chứa ảnh nếu chưa có
-os.makedirs("figures", exist_ok=True)
+os.makedirs("figures/3W", exist_ok=True)
 
 # Bảng màu và ký hiệu chuẩn
 COLORS = ['blue', 'magenta', 'green', 'orange', 'cyan', 'purple', 'brown', 'pink', 'olive', 'teal', 'navy', 'crimson']
@@ -79,5 +79,5 @@ def plot_figure_10(eta_values, dataset_f1_dict):
     plt.legend(loc='best', fontsize=10, ncol=2)
     plt.grid(True, linestyle='--', alpha=0.6)
     
-    plt.savefig("figures/Figure_10_F1_vs_eta.png", dpi=300, bbox_inches='tight', facecolor='white')
+    plt.savefig("figures/3W/Figure_10_F1_vs_eta.png", dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
