@@ -25,6 +25,10 @@ def extract_bounds_labels(model, n_samples):
 
 def main():
     data_dir = "data"
+    
+    os.makedirs("figures/3W", exist_ok=True)
+    os.makedirs("results/3W", exist_ok=True)
+    
     datasets = [
         "3L", "4C", "S1", "IRIS", "Glass", 
         "Seeds", "Pathbased", "Aggregation", "Compound", "Flame"
@@ -94,7 +98,7 @@ def main():
             
             # --- VẼ HÌNH TRỰC QUAN ĐỒNG THỜI VÀO FOLDER FIGURES ---
             plot_4_panels(X, y, ds_dbscan.labels_, ce3, tw_dbscan, ds_name)
-            print(f" (Đã xuất ảnh: figures/Figure_{ds_name}.png)")
+            print(f" (Đã xuất ảnh: figures/3W/Figure_{ds_name}.png)")
             
             # Tính Metrics cho bảng
             ce3_lb_preds, ce3_ub_preds = extract_bounds_labels(ce3, n_samples)
@@ -139,7 +143,7 @@ def main():
         dataset_f1_dict[ds_fig10] = f1_list
         
     plot_figure_10(eta_range, dataset_f1_dict)
-    print(" (Đã xuất ảnh: figures/Figure_10_F1_vs_eta.png)")
+    print(" (Đã xuất ảnh: figures/3W/Figure_10_F1_vs_eta.png)")
 
     # --- IN BẢNG ĐA TẦNG TABLE 2 ---
     if len(results) > 0:
@@ -156,7 +160,23 @@ def main():
         print(f"{'TABLE 2: DIFFERENT CLUSTERING PERFORMANCE ON 10 DATASETS':^110}")
         print("="*110)
         print(df_results.to_string(index=False))
+<<<<<<< HEAD
         print("="*110)
+=======
+        print("="*145)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"Table2_{timestamp}.xlsx"
+        filepath = os.path.join("results/3W", filename)
+        
+        # KHẮC PHỤC LỖI: Đặt Dataset và Metric làm Index để Excel tự động gộp ô (Merge cells)
+        df_export = df_results.set_index([("Dataset", ""), ("Metric", "")])
+        
+        # Lưu file bình thường, bỏ đi tham số index=False
+        df_export.to_excel(filepath)
+        
+        print(f"\n[THÀNH CÔNG] Bảng Data Table chuẩn ô lưới đã được lưu ra file Excel tại: {filepath}")
+>>>>>>> 34525a8e906cc6f452e5306095a293b97b0d507f
 
 if __name__ == "__main__":
     main()

@@ -53,18 +53,28 @@ class LE3W_DBSCAN:
                     elif labels[q] == -1:
                         labels[q] = cluster_id
                         
-                    # Kiểm tra q có phải điểm lõi không (sử dụng CÙNG Eps_j của cụm hiện tại)
-                    neighbors_q = np.where(D[q] <= eps_j)[0]
-                    if len(neighbors_q) >= self.min_samples:
-                        core_flags[q] = True
-                        for n_q in neighbors_q:
-                            if n_q in unclassified or labels[n_q] == -1:
-                                if n_q not in queue:
-                                    queue.append(n_q)
+                    # Chỉ mở rộng từ điểm thuộc cụm hiện tại, tránh set core_flags sai cho điểm cụm khác
+                    if labels[q] == cluster_id:
+                        neighbors_q = np.where(D[q] <= eps_j)[0]
+                        if len(neighbors_q) >= self.min_samples:
+                            core_flags[q] = True
+                            for n_q in neighbors_q:
+                                if n_q in unclassified or labels[n_q] == -1:
+                                    if n_q not in queue:
+                                        queue.append(n_q)
             else:
                 unclassified.remove(p)
                 labels[p] = -1
                 
+        # Gộp cụm quá nhỏ (< min_samples điểm) vào noise để xử lý ở giai đoạn 3-chiều
+        for cid in set(labels) - {-1}:
+            members = np.where(labels == cid)[0]
+            if len(members) < self.min_samples:
+                labels[members] = -1
+                core_flags[members] = False
+                if cid in self.local_eps_dict:
+                    del self.local_eps_dict[cid]
+
         # --- Giai đoạn 2: LE3W-DBSCAN (Ba chiều) ---
         unique_clusters = set(labels) - {-1}
         for c in unique_clusters:
@@ -90,7 +100,6 @@ class LE3W_DBSCAN:
                 else:
                     for m in neighbor_labels:
                         self.BND[m].add(i)
-                    self.BND[c].add(i)
                     
         # Phân bổ điểm nhiễu (Gán vào BND của cụm chứa điểm lõi gần nhất)
         core_indices = np.where(core_flags)[0]

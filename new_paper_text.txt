@@ -1,0 +1,1191 @@
+Total pages: 10
+
+===== PAGE 1 =====
+基于局部半径的三支DBSCAN算法
+申秋萍, 张清华, 高满, 代永杨
+引用本文
+申秋萍, 张清华, 高满, 代永杨. 基于局部半径的三支DBSCAN算法[J]. 计算机科学, 2023, 50(6): 100-
+108. 
+SHEN Qiuping, ZHANG Qinghua, GAO Man, DAI Yongyang. Three-way DBSCAN Algorithm Based on
+Local Eps [J]. Computer Science, 2023, 50(6): 100-108.
+相似文章推荐（请使用火狐或 IE 浏览器查看文章）
+Similar articles recommended (Please use Firefox or IE to view the article)
+基于三支聚类的云任务优化调度
+Optimal Scheduling of Cloud Task Based on Three-way Clustering
+计算机科学, 2022, 49(11A): 211100139-7. https://doi.org/10.11896/jsjkx.211100139
+基于改进的SLIC和聚类算法结合的高分辨率遥感海冰图像分割
+High-resolution Remote Sensing Sea Ice Image Segmentation Based on Combination of
+ImprovedSLIC Algorithm and Clustering Algorithm
+计算机科学, 2022, 49(11A): 211200100-6. https://doi.org/10.11896/jsjkx.211200100
+基于三角不等式判定和局部策略的高效邻域覆盖模型
+Efficient Neighborhood Covering Model Based on Triangle Inequality Checkand Local Strategy
+计算机科学, 2022, 49(5): 152-158. https://doi.org/10.11896/jsjkx.210300302
+基于变分自编码器的不平衡样本异常流量检测
+Detection of Abnormal Flow of Imbalanced Samples Based on Variational Autoencoder
+计算机科学, 2021, 48(7): 62-69. https://doi.org/10.11896/jsjkx.200600022
+一种改进的DBSCAN算法在Spark平台上的应用
+Application of Improved DBSCAN Algorithm on Spark Platform
+计算机科学, 2020, 47(11A): 425-429. https://doi.org/10.11896/jsjkx.190700071
+
+===== PAGE 2 =====
+http://www．
+jsjkx．com
+DOI:１０．１１８９６/jsjkx．２２０８０００７４
+到稿日期:２０２２Ｇ０８Ｇ０８　返修日期:２０２２Ｇ１１Ｇ２１
+基金项目:国家重点研究发展计划(２０２０YFC２００３５０２);国家自然科学基金(６１８７６２０１);重庆英才名家名师项目(CQYC２０２１０２０２２１５)
+ThisworkwassupportedbytheNationalKeyResearchandDevelopmentProgramofChina(２０２０YFC２００３５０２),NationalNaturalScienceFounＧ
+dationofChina(６１８７６２０１)andTalentedMastersandTeachersProjectofChongqing(CQYC２０２１０２０２２１５)．
+通信作者:张清华(zhangqh＠cqupt．edu．cn)
+基于局部半径的三支DBSCAN 算法
+申秋萍１
+张清华１,２
+高　满１
+代永杨１
+１重庆邮电大学计算智能重庆市重点实验室　重庆４０００６５
+２重庆邮电大学旅游多源数据感知与决策技术文化和旅游部重点实验室　重庆４０００６５
+　(sqp６７５０＠１６３．com)
+　
+摘　要　DBSCAN(DensityＧBasedSpatialClusteringofApplicationswithNoise)是一种经典的基于密度的聚类算法,它通过两
+个全局参数即半径Eps和最少点数MinPts,能够对任意形状的数据进行聚类,并自动确定类个数.但是,使用全局半径的DBＧ
+SCAN 对于密度不均匀数据集的聚类效果较差,且无法对重叠数据集进行聚类.因此,定义了密度递减原则和局部半径,并根
+据kＧ近邻距离自动确定局部半径,从而提出了基于局部半径的DBSCAN 算法(LEＧDBSCAN);然后,通过考虑近邻的标签,对二
+支聚类结果的临界点和噪声点进行重新划分,从而提出了基于局部半径的三支DBSCAN 算法(LE３WＧDBSCAN).将LEＧDBＧ
+SCAN 和LE３WＧDBSCAN 与该领域的相关算法在UCI数据集和人工数据集上进行对比,实验结果表明,所提算法在常用的硬
+聚类指标和软聚类指标上都具有较好的表现.
+关键词:三支聚类;DBSCAN;局部半径;多密度;重叠数据集
+中图法分类号　TP３９１
+　
+ThreeＧwayDBSCANAlgorithmBasedonLocalEps
+SHEN Qiuping
+１,ZHANG Qinghua
+１,２,GAO Man
+１andDAIYongyang
+１
+１ChongqingKeyLaboratoryofComputationalIntelligence,ChongqingUniversityofPostsandTelecommunications,Chongqing４０００６５,China
+２KeyLaboratoryofTourism MultisourceDataPerceptionandDecision,MinistryofCultureandTourism,ChongqingUniversityofPostsand
+Telecommunitions,Chongqing４０００６５,China
+Abstract　DensityＧbasedspatialclusteringofapplicationswithnoise(DBSCAN)isaclassicaldensityＧbasedclusteringalgorithm．
+Itclustersdatasetofarbitraryshapethroughtwoglobalparameters:radiusEpsandminimumnumberofpointsMinPts,andautoＧ
+maticallydeterminesthenumberofclusters．However,DBSCANwithglobalEpshaspoorclusteringeffectondatasetswithuneＧ
+vendensity,andcannotclusteroverlappingdatasets．Therefore,theclusteringprincipleofdecreasingdensityandlocalEpsaredeＧ
+finedinthispaper．ThelocalEpsisautomaticallydeterminedaccordingtothekＧnearestneighbordistance,andtheDBSCANalgoＧ
+rithmbasedonlocalEps(LEＧDBSCAN)isproposed．Then,byconsideringthelabelsofthenearestneighbors,theborderpoints
+andnoisesinthetwoＧwayclusteringresultsareredivided,andthethreeＧwayDBSCANalgorithmbasedonlocalEps(LE３WＧDBＧ
+SCAN)isproposed．LEＧDBSCANandLE３WＧDBSCANarecomparedwiththerelatedalgorithmsinthisfieldonUCIdatasets
+andartificialdatasets．ExperimentalresultsshowthattheproposedalgorithmhasgoodperformancebothincommonhardclusteＧ
+ringindicesandsoftclusteringindices．
+Keywords　ThreeＧwayclustering,DBSCAN,LocalEps,MultiＧdensity,Overlappingdatasets
+　
+１　引言
+聚类是一种无监督的机器学习算法,也是数据挖掘中的
+一个重要分支[１Ｇ２].随着大数据的发展,聚类技术已经被应用
+于众多领域,如知识图谱[３]、统计学[４]、生物学[５]、图像处
+理[６]、模式识别[７]和医疗健康[８Ｇ９]等.传统的聚类算法主要有
+划分方法、密度方法、层次方法、网格方法和模型方法这５种,
+其中基于划分和密度的聚类算法应用最为广泛.但基于划分
+的聚类算法大部分是基于距离的,因此只适用于球形或异球
+形的数据集,并且都需要人工给定类簇个数.基于密度的聚
+类算法与其他聚类算法的根本区别,就是其可以处理任何形
+状的数据集.密度峰值[１０Ｇ１１]和DBSCAN
+[１２]等算法都是具有
+
+===== PAGE 3 =====
+代表性的基于密度的聚类算法.
+传统的聚类算法也被称为硬聚类或二支聚类,它们假设
+所有类簇都具有清晰的边界,任意类簇之间都不存在重叠的
+区域[１３].但是,现实中的数据往往呈现出模糊、重叠的特性,
+使用传统的硬聚类算法处理这类数据会出现模糊信息和重叠
+信息的丢失.比如在医疗健康领域中,经常存在无法准确判
+断病人是否患有某种疾病,或者一位病人同时患有多种疾病
+的情况,而传统的硬聚类算法只能将病人划分到某一个疾病
+的类中,无法对这些模糊的数据进行特定的标记.因此,各种
+软聚类算法或三支聚类算法被提出,用来解决数据模糊性和
+重叠性的问题[１４Ｇ１５].Yu等将三支决策理论融入传统聚类,提
+出了三支聚类框架,使用正域、负域和边界域表示一个
+类[１６Ｇ１７].Wang等结合数学形态学的腐蚀和膨胀的思想,提
+出了基于收缩与扩张的三支聚类算法[１８].Zhang将三支决
+策理论与KＧMeans算法结合,提出了TCM 算法[１９];并受
+Maji等提出的RFCM
+[２０]算法中对评价指标定义的启发,提出
+了软聚类专用的评价指标.
+DBSCAN
+[１２]是由Ester等提出的一种经典的基于密度的
+聚类算法,它使用两个全局参数,即半径Eps 和最少点数
+MinPts,规定了密度范围,并将符合该密度范围的点的最大
+集合定义为一个簇.DBSCAN 由于能够自动确定类簇的个
+数,且可以对任意形状的数据集进行聚类,因此被广泛使用.
+然而,DBSCAN 仍然存在一些不足:１)使用全局的半径,无法
+对密度不均匀的数据进行聚类,且参数的设定过于敏感,参数
+过大或过小都会导致算法无法得到正确的类簇个数,聚类结
+果较差;２)现有的DBSCAN 算法以及它的扩展算法都属于二
+支聚类算法,无法处理模糊、重叠的数据集.针对这些问题,
+人们提出很多对DBSCAN 算法的改进方法.例如,Hu等提
+出的KRＧDBSCAN 算法使用反向最近邻和影响空间定义了
+新的扩展条件,从而区分不同密度的相邻类簇[２１].Chen基
+于核密度估计理论提出的自适应计算半径的方法,克服了多
+密度环境下无法正确聚类的问题[２２].Yu等利用缩放函数将
+原始距离矩阵进行规范化,并将改进的DBSCAN 算法与三支
+决策理论相结合,提出了３WＧDBSCAN 算法[２３].然而,现有
+研究仍然存在参数过于敏感和聚类结果过于模糊等缺陷,难
+以得到较好的聚类结果.
+为了解决以上问题,本文提出了可处理多密度重叠数据
+的基于局部半径的三支DBSCAN 算法,并将其称为LE３WＧ
+DBSCAN.本文的主要创新点如下:
+(１)对于密度不均匀的数据集,定义了密度递减原则和局
+部半径,每次在未分类数据中选择密度最大的点作为新类簇
+的第一个点,并跟据该点的kＧ近邻距离自动确定该类簇的局
+部半径,从而提出了基于局部半径的DBSCAN 算法(LEＧDBＧ
+SCAN).
+(２)对于重叠数据集,受Yu的三支DBSCAN 算法的启
+发,首先基于LEＧDBSCAN 算法得到二支聚类结果,然后通过
+考虑近邻对象的类标签,对边界点和噪声点进行重新划分,得
+到三支聚类结果,从而提出了基于局部半径的三支DBSCAN
+算法(LE３WＧDBSCAN).
+本文第２节介绍了DBSCAN 算法的基本定义和算法
+流程;第３节提出了LEＧDBSCAN 和LE３WＧDBSCAN 算法,
+介绍了算法的主要思想和算法流程;第４节将所提出的算法
+与该领域的相关算法在UCI数据集和人工数据集上进行对
+比,验证了所提算法的优势;最后总结全文.
+２　相关工作
+为了便于理解本文所提出的算法,本节分别介绍了DBＧ
+SCAN 算法的基本定义和算法流程,以及三支聚类的基本定
+义和性质.
+２．１　DBSCAN 算法
+DBSCAN 算法[１２]是一种经典的基于密度的聚类算法,它
+将密度足够高的区域划分成一个类,因此具有能够发现任意
+形状类簇和识别噪声的优势.DBSCAN 算法需要人工设定
+两个全局的参数,即半径Eps和最少点数MinPts.DBSCAN
+算法的相关定义如下.
+定义１(Eps邻域)　对于对象集合X,p∈X,点p 的Eps
+邻域NEps(p)定义为:
+NEps(p)＝{q∈X|dist(p,q)≤Eps}
+其中,dist(p,q)表示两点的距离函数,本文将欧几里得距离
+作为距离函数.
+DBSCAN 算法将所有对象分为３种:若|NEps(p)|≥
+MinPts,则称点p 为核心点;若１＜|NEps(p)|＜MinPts,则称
+点p 为边界点;若|NEps(p)|＝１,则称点p 为噪声点.
+定义２(直接密度可达)　若点p 是核心点,且点q∈
+NEps(p),则称从p 到q 直接密度可达.
+定义３(密度可达)　对于给定的一个对象序列p１,
+p２,􀆺,pn,若p１＝p,pn＝q,且对于任意的i∈[１,n)都满足从
+pi 到pi＋１直接密度可达,则称从p 到q 密度可达.
+定义４(密度相连)　若存在点o,满足点p 和点q 都是到
+o 密度可达,则称p 到q 是密度相连的.
+定义５(类簇)　对于对象集合X 的任意非空子集C,假
+如C 满足以下两点,则称C 是一个类簇:１)∀p,q,如果p∈C
+且从p 到q 密度可达,则q∈C;２)∀p,q∈C,p 和q 都是直接
+密度可达或密度相连的.
+DBSCAN 算法的大致流程为:１)输入参数Eps 和
+MinPts;２)在对象集合中随机选择未被分类的点p,如果p 是
+核心点,则创建一个新的类簇,并从p 开始迭代算法,直到发
+现所有密度可达或密度相连的邻点,并将这些邻点也划分到
+该类簇,否则将点p 视为噪声点;３)重复步骤２),直到除噪声
+点以外的所有对象都被分类.
+２．２　三支聚类
+三支聚类框架由Yu等提出,用来解决重叠数据集的聚
+类问题[１６Ｇ１８].设讨论的对象集合为X＝{x１,x２,􀆺,xi,􀆺,
+xn},其中n是对象个数,xi 代表一个对象,１≤i≤n.聚类结
+果为C＝{C１,C２,􀆺,Cj,􀆺,Cc},其中c是类的个数,cj 代表
+一个类,１≤j≤c.与传统的二支聚类不同,三支聚类中每个
+类由３个部分表示,即正域、负域和边界域,分别记为C
+P,C
+N ,
+C
+B.其中,一个类簇的正域是完全属于该类的对象的集合;
+负域是完全不属于该类的对象的集合;边界域是既属于该类
+也属于其他类,或不完全属于该类簇的对象的集合.显然,
+１
+０
+１
+申秋萍,等:基于局部半径的三支DBSCAN 算法
+
+===== PAGE 4 =====
+C
+N ＝X－(C
+P∪C
+B).
+三支聚类中所有类簇都满足以下性质:
+(１)Cj＝C
+P
+j ∪C
+B
+j ,Cj≠Ø,
+j＝１,􀆺,
+c
+(２)X＝C
+P
+j ∪C
+B
+j ∪C
+N
+j ,
+j＝１,􀆺,
+c
+(３)X＝∪
+c
+j＝１Cj,
+j＝１,􀆺,
+c
+(４)C
+P
+j ∩C
+B
+j ＝Ø,
+j＝１,􀆺,
+c
+(５)C
+P
+j ∩C
+N
+j ＝Ø,
+j＝１,􀆺,
+c
+(６)C
+B
+j ∩C
+N
+j ＝Ø,
+j＝１,􀆺,
+c
+(７)C
+P
+i ∩C
+P
+j ＝Ø,
+i≠j,
+i＝１,􀆺,
+c,
+j＝１,􀆺,
+c
+(８)C
+P
+i ∩C
+B
+j ＝Ø,
+i≠j,
+i＝１,􀆺,
+c,
+j＝１,􀆺,
+c
+从以上性质可知,当所有类簇的边界域都为空,即∀j∈
+[１,
+c],C
+B
+j ＝Ø 时,Cj＝C
+P
+j ,X＝C
+P
+j ∪C
+N
+j ,此时聚类结果就是二
+支聚类.因此,三支聚类是二支聚类的一种特殊情况.
+３　LE３WＧDBSCAN 聚类算法
+根据DBSCAN 算法的思想,半径Eps 和最少点数
+MinPts 是用来限制密度的两个重要参数,它们是全局使用
+的.算法通过调整这两个参数,使其满足所有类簇的密度需
+求,才能得到较好的聚类结果.然而,对于密度不均匀的数据
+集,没有参数能同时满足所有类簇的不同密度需求.以图１
+中的Compound数据集为例,可见类C１的密度明显小于其他
+类,导致参数无法选择.假如所选的参数满足C１的密度,那
+么对于其他类簇来说,参数限制的密度过小,会导致其他类簇
+无法被区分开;假如所选的参数满足除C１以外的类簇的密
+度,那么对于C１来说,参数限制的密度过大,会导致C１被分
+成多个类簇,或被当成噪声;并且类簇C３和C４之间没有清晰
+的边界,难以对它们中间的几个对象进行划分.
+图１　多密度数据集示例
+Fig．１　ExamplesofmultiＧdensitydataset
+为了解决密度不均匀和重叠数据集的聚类问题,本文提
+出了基于局部半径的三支DBSCAN 算法(LE３WＧDBSCAN).
+３．１　基于局部半径的DBSCAN 算法
+在使用DBSCAN 的聚类思想对密度不均匀的数据集进
+行聚类时,由于类簇的密度不同,在最少点数MinPts不变的
+情况下,类簇的密度越大,半径的取值应该越小,反之,半径的
+取值应该越大.因此,本文提出了基于局部半径的DBSCAN
+算法,并称之为LEＧDBSCAN.局部半径的定义如下.
+定义６(局部半径)　在使用LEＧDBSCAN 算法对集合X
+进行聚类时,根据每个类簇Cj 的密度计算相应的半径Epsj,
+称半径Epsj 为类簇Cj 的局部半径或局部Eps.
+此时,假设点p∈Cj,类簇Cj 的局部半径为Eps
+j.若
+|NEpsj (p)|≥MinPts,则称点p 为核心点;若１＜|NEpsj (p)|＜
+MinPts,则称点p 为边界点;若|NEpsj (p)|＝１,则称点p 为噪
+声点.
+在真实的聚类环境下,数据的分布和类簇的个数都是未
+知的,因此无法人为输入每个类簇的局部半径.本文提出了
+根据kＧ近邻距离自适应计算局部半径的方法.kＧ近邻距离的
+定义如下.
+定义７(kＧ近邻距离)　对于对象集合X,任意点p∈X,
+假设将集合X 中所有对象到点p 的距离由小到大进行排序,
+为d１,d２,􀆺,dk,􀆺,dn,则称第k 个距离dk 为点p 的kＧ近邻
+距离,１≤k≤n.
+在选定类簇的第一个点后,如果该点所在的类簇密度较
+小,那么它的kＧ近邻距离较大;反之,该点的kＧ近邻距离较小.
+因此将类簇第一个点的kＧ近邻距离作为该类簇的局部半径,
+不但能够自适应地计算局部半径,而且可以将人工参数从半
+径Eps转化为近邻序数k,避免了人工参数过于敏感的问题,
+降低了人为确定参数的难度.一般而言,k 的取值大于最少
+点数MinPts,小于对象个数n.
+另外,如图１中的例子所示,假设第一次随机选择的是密
+度最大的类簇中的对象,则不会影响其他类簇的聚类.但是,
+如果第一次随机选择的是图１中类簇C１中的对象,由于它的
+密度较小,会计算得到较大的半径,可能会导致其他几个类簇
+无法被区分开.为了解决这类问题,本文提出了密度递减的
+聚类原则,即按照所有类簇的密度从大到小进行聚类.密度
+递减原则的具体实现方法和基于局部半径的DBSCAN 算法
+(LEＧDBSCAN)的详细流程如下.
+步骤１　输入最少点数MinPts和近邻次序k.
+步骤２　根据密度函数计算所有对象的密度,在本文所
+提算法中,将每个对象到它最近的MinPts个近邻的距离的
+平均值作为密度函数.
+步骤３　根据密度递减原则进行聚类.即对于新的类簇
+Cj,在对象集合X 中选择未被分类的点中密度最大的点p 作
+为新的类簇Cj 的第一个点.
+步骤４　根据点p的kＧ近邻距离计算类簇Cj 的局部半径.
+步骤５　根据最少点数MinPts和局部半径Epsj,得到核
+心点、边界点和噪声点集合.从点p 开始迭代算法,直到发
+现点p 所有密度可达或密度相连的邻点,并将这些邻点也划
+分到类簇Cj.
+步骤６　j＝j＋１,重复步骤２－步骤５,直到除噪声点以
+外的所有对象都被分类.
+根据算法流程可知,LEＧDBSCAN 算法通过依次选择未
+分类数据中最大密度的点,实现对类簇从高密度到低密度的
+聚类顺序,并且通过kＧ近邻距离自动计算类簇的局部半径,实
+现了对多密度数据的聚类,同时也降低了参数的敏感度.
+３．２　考虑近邻标签的三支聚类
+本文提出的LEＧDBSCAN 算法能够解决数据密度不均匀
+的问题,并得到二支聚类结果.而数据中存在的模糊或重叠
+的问题,仍未得到解决.根据LEＧDBSCAN 算法的定义,核心
+点的密度较大,且往往处于类簇中靠近中心的位置,具有较强
+的确定性.但是,边界点和噪声点的密度较低,且处于类簇边
+缘的位置或者呈散落分布,具有较强的模糊性和重叠性.
+２
+０
+１
+ComputerScience 计算机科学
+Vol．５０,No．６,June２０２３
+
+===== PAGE 5 =====
+因此,本文受文献[２３]中３WＧDBSCAN 算法的启发,并对其
+进行改进,通过考虑近邻的标签对边界点和噪声点重新进行
+划分,提出了基于局部半径的三支DBSCAN 算法,并称之为
+LE３WＧDBSCAN.算法的具体步骤如下.
+步骤１　根据本文提出的LEＧDBSCAN 算法对数据进行
+聚类,得到二支聚类结果.
+步骤２　对于对象集合X 中的任意点p,如果点p 是核
+心点,且在二支聚类结果中p∈Cj,将点p 划分到Cj 的正域,
+即p∈C
+P
+j .
+步骤３　如果点p 是边界点,且在二支聚类结果中p∈
+Cj,求点p 的Epsj 邻域得到Epsj (p). 假如,任意点q∈
+NEpsj (p)都满足q∈Cj,那么将点p 划分到Cj 的正域,即p∈
+C
+P
+j .假如,对于任意点q∈NEpsj (p),存在点q∈Cm ,m≠j,那
+么将点p 划分到Cj 和Cm 的边界域,即p∈C
+B
+j ,p∈C
+B
+m .
+步骤４　如果点p 是噪声点,找到距离点p 最近的核心
+点q,如果在二支聚类结果中q∈Cj,那么将点p 划分到Cj 的
+边界域,即p∈C
+B
+j .
+根据步骤１－步骤４,最终得到三支聚类结果.与文献
+[２３]中３WＧDBSCAN 不同,该算法中如果边界点p 的Epsj
+邻域中的对象都与点p 属于同一个类Cj,那么点p 仍属于Cj
+的正域,而非边界域;并且本文的算法是基于局部半径,考虑
+的是Epsj 邻域中的近邻的标签,而非全局的Eps邻域.因
+此,本文提出的算法能够得到更加准确的重叠信息,而不会为
+了保留重叠信息导致聚类结果过于模糊.
+３．３　基于局部半径的三支DBSCAN 算法
+本文首先提出LEＧDBSCAN 算法,用于处理数据集密度
+不均匀的聚类问题.然后,在LEＧDBSCAN 算法得到的二支
+聚类结果的基础上,通过考虑近邻的标签将二支聚类结果转
+化为三支聚类结果,并将其称为LE３WＧDBSCAN 算法.算法
+的流程图如图２所示.
+图２　LE３WＧDBSCAN 算法流程图
+Fig．２　FlowchartofLE３WＧDBSCAN
+LE３WＧDBSCAN 算法的伪代码如算法１所示.
+算法１　基于局部半径的三支DBSCAN 算法
+输入:数据集X,最少点数MinPts,近邻次序k;
+输出:聚类结果Cj＝(C
+P
+j,C
+B
+j),１≤j≤c.
+１．DistanceMatrix＝getDistanceMatrix(X);/∗计算任意两点之间的
+距离,得到距离矩阵∗/
+２．DentistMatrix＝getDentistMatrix(MinPts,DistanceMatrix);/∗计
+算所有对象的密度∗/
+３．clustId＝０;
+４．whileUnclassifiedobjectsstillexistdo:
+５．clusterId＝clusterId＋１;
+６．pointId＝getMostDensePoint(DentistMatrix);/∗从未分类对象中
+选择密度最大的点∗/
+７．EpsclusterId＝getEps(pointId,DistanceMatrix,k);/∗计算类簇的
+局部半径∗/
+８．twoWayResult ＝expandC (pointId,clusterId,EpsclusterId,
+MinPts);/∗开始扩张类簇∗/
+９．endwhile
+１０．for(i＝０;
+i＜n;
+i＋＋)
+１１．clusterId＝getClassLabel(twoWayResult,xi);/∗获取xi的类标签∗/
+１２．threeWayReslut＝Reclassify(xi,EpsclusterId);/∗将边界点和噪
+声点重新分类,确定类簇的正域和边界域,得到三支聚类结果∗/
+１３．endfor
+１４．returnthreeWayResult;
+４　实验分析
+为了更加全面地评估算法的有效性,本文使用了硬聚类
+评价指标和软聚类评价指标对二支聚类算法LEＧDBSCAN 和
+三支聚类算法LE３WＧDBSCAN 分别进行评估.首先,将LEＧ
+DBSCAN 算法与DBSCAN 算法[１２]、KRＧDBSCAN 算法[２１]和
+３WＧDBSCAN 算法[２３]的二支聚类结果进行对比,所使用的硬
+聚类评价指标为常用的ACC,ARI和NMI,相应的实验结果
+在４．２节中给出.然后,将LE３WＧDBSCAN 算法与３WＧDBＧ
+SCAN 算法的三支聚类结果进行对比,使用的软聚类评价指
+标由Maji等和Zhang提出,４．１节中给出了软聚类评价指标
+的详细定义,相应的实验结果在４．３节中给出.
+４．１　实验设置
+本文在常用的UCI真实数据集和人工数据集上将本文
+所提算法与其他聚类算法进行对比,数据集的信息如表１所
+列,其中序号１Ｇ５为人工数据集,序号６Ｇ１１为真实数据集.
+表１　数据集
+Table１　Datasets
+序号
+数据集
+类个数
+维度
+样本数
+来源文献
+１
+Aggregation
+７
+２
+７８８
+[２４]
+２
+Compound
+６
+２
+３９９
+[２５]
+３
+Pathbased
+３
+２
+３００
+[２６]
+４
+Jain
+２
+２
+３７３
+[２７]
+５
+Flame
+２
+２
+２４０
+[２８]
+６
+dermatology
+６
+３４
+３６６
+[２９]
+７
+ecoli
+５
+７
+２１０
+[２９]
+８
+iris
+３
+４
+１５０
+[３０]
+９
+seeds
+３
+７
+１９７
+[３０]
+１０
+wine
+３
+１３
+１７８
+[３０]
+１１
+haberman
+２
+３
+３０６
+[３０]
+实验中每个算法的参数都是在合理取值范围内取聚类
+３
+０
+１
+申秋萍,等:基于局部半径的三支DBSCAN 算法
+
+===== PAGE 6 =====
+结果最优的参数值作为最终值.DBSCAN 算法包含两个参
+数,即最少点数MinPts和半径Eps,本文将MinPts在[２,３０]
+的范围内以１的步长进行取值,将Eps在[０．０１,０．５]的范围
+内以０．００１的步长进行取值.KRＧDBSCAN 算法包含一个参
+数,即近邻数k,本文将k在[２,３０]的范围内以１的步长进行
+取值.３WＧDBSCAN 算法包含两个参数,即最少点数MinPts
+和半径Eps,MinPts的取值与DBSCAN 算法中的取值方法
+相同.由于３WＧDBSCAN 算法的核心思想是使用缩放函数
+对距离矩阵进行规范化,然后基于规范化之后的距离矩阵进
+行聚类,因此Eps的取值与DBSCAN 算法中的取值方法不
+同,本文将３WＧDBSCAN 中的Eps 在[０．１,２]范围内以
+０．０００１的步长进行取值.本文所提出的LE３WＧDBSCAN 算
+法包含两个参数,即最少点数MinPts和近邻序数k,MinPts
+的取值与DBSCAN 算法中的取值方法相同,k 在[２,１００]的
+范围内以１的步长进行取值.
+由于硬聚类指标无法评估类簇的正域和边界域之间的关
+系,因此本文也使用了软聚类指标对三支聚类结果进行评估.
+第一个评价指标是由Maji等提出的[２０],其定义为:
+γ＝１
+n ∑
+c
+j＝１|C
+P
+j|
+其中,n 表示样本数,c表示类簇个数,C
+P
+j 表示类Cj 的正域,
+|􀅰|表示集合中对象的个数.因此,γ 表示所有正域的平均
+质量,它的值越大,表示聚类效果越好.
+另外两个评价指标是由Zhang提出的[１９],其定义为:
+α＝１
+c ∑
+c
+j＝１
+|C
+P
+j|
+|C
+P
+j|＋|C
+B
+j|
+α
+∗＝
+∑
+c
+j＝１|C
+P
+j|
+∑
+c
+j＝１(|C
+P
+j|＋|C
+B
+j|)
+其中,C
+B
+j 表示类Cj 的边界域.α 和α
+∗分别表示c个类簇的
+平均质量和整体质量,它们都是值越大表示聚类效果越好.
+４．２　二支聚类实验结果
+本文使用DBSCAN 算法、KRＧDBSCAN 算法、３WＧDBＧ
+SCAN 算法与本文所提出的LEＧDBSCAN 算法对１１个常用
+数据集进行聚类,其中,LEＧDBSCAN 算法在聚类过程中得到
+的局部半径详细数值由表２所列.各算法对人工数据集的聚
+类效果如图３－图７所示.对真实数据集和人工数据集进行
+聚类得到的二支聚类结果,在硬聚类指标上的得分如表３
+所列.
+表２　LEＧDBSCAN 计算得到的局部半径
+Table２　LocalEpsobtainedbyLEＧDBSCAN
+序号
+数据集
+类个数
+epsC１
+epsC２
+epsC３
+epsC４
+epsC５
+epsC６
+epsC７
+１
+Aggregation
+７
+０．０５１３
+０．０５７３
+０．０６３３
+０．０６９０
+０．０７３５
+０．０７３５
+０．０６３５
+２
+Compound
+６
+０．０４９５
+０．０５５６
+０．０３９１
+０．０３６３
+０．０４０１
+０．１５８８
+３
+Pathbased
+３
+０．０５６１
+０．０７３３
+０．１９９８
+４
+Jain
+２
+０．０６６６
+０．０９４９
+５
+Flame
+２
+０．０６２８
+０．０６８０
+６
+dermatology
+６
+１．０６２８
+１．５５８０
+１．４７４４
+１．７３２１
+１．７０４６
+２．３５７２
+７
+ecoli
+５
+０．１７２６
+０．２４１１
+０．４３０４
+０．４９８２
+１．０２６６
+８
+iris
+３
+０．３４９８
+０．２９２７
+０．６０８９
+９
+seeds
+３
+０．３０９２
+０．３９９３
+０．５２６５
+１０
+wine
+３
+０．５９７０
+０．９７３４
+１．１９０５
+１１
+haberman
+２
+０．１９２６
+０．４９３１
+(a)原图
+(b)DBSCAN
+(c)KRＧDBSCAN
+(d)３WＧDBSCAN
+(e)LEＧDBSCAN
+图３　Aggregation二支聚类实验结果
+Fig．３　ExperimentalresultsoftwoＧwayclusteringofAggregation
+４
+０
+１
+ComputerScience 计算机科学
+Vol．５０,No．６,June２０２３
+
+===== PAGE 7 =====
+(a)原图
+(b)DBSCAN
+(c)KRＧDBSCAN
+(d)３WＧDBSCAN
+(e)LEＧDBSCAN
+图４　Compound二支聚类实验结果
+Fig．４　ExperimentalresultsoftwoＧwayclusteringofCompound
+(a)原图
+(b)DBSCAN
+(c)KRＧDBSCAN
+(d)３WＧDBSCAN
+(e)LEＧDBSCAN
+图５　Pathbased二支聚类实验结果
+Fig．５　ExperimentalresultsoftwoＧwayclusteringofPathbased
+(a)原图
+(b)DBSCAN
+(c)KRＧDBSCAN
+(d)３WＧDBSCAN
+(e)LEＧDBSCAN
+图６　Jain二支聚类实验结果
+Fig．６　ExperimentalresultsoftwoＧwayclusteringofJain
+５
+０
+１
+申秋萍,等:基于局部半径的三支DBSCAN 算法
+
+===== PAGE 8 =====
+(a)原图
+(b)DBSCAN
+(c)KRＧDBSCAN
+(d)３WＧDBSCAN
+(e)LEＧDBSCAN
+图７　Flame二支聚类实验结果
+Fig．７　ExperimentalresultsoftwoＧwayclusteringofFlame
+表３　二支聚类实验结果
+Table３　ExperimentalresultsofttwoＧwayclustering
+数据集
+ACC
+DBSCAN
+KRＧ
+DBSCAN
+３WＧ
+DBSCAN
+LEＧ
+DBSCAN
+ARI
+DBSCAN
+KRＧ
+DBSCAN
+３WＧ
+DBSCAN
+LEＧ
+DBSCAN
+NMI
+DBSCAN
+KRＧ
+DBSCAN
+３WＧ
+DBSCAN
+LEＧ
+DBSCAN
+１
+０．９９２
+０．９９７
+０．９９７
+０．９９７
+０．９８９
+０．９９５
+０．９９５
+０．９９５
+０．９８３
+０．９９２
+０．９９２
+０．９９２
+２
+０．８２２
+０．９２５
+０．７８２
+０．９５２
+０．９３９
+０．８８９
+０．７６０
+０．９４７
+０．８９６
+０．８９６
+０．７７７
+０．９１８
+３
+０．８４７
+０．９６７
+０．７０７
+０．９５７
+０．７０７
+０．９０１
+０．５４８
+０．８７２
+０．７３８
+０．８７０
+０．６８９
+０．８４７
+４
+０．７５６
+１
+１
+１
+０．９３４
+１
+１
+１
+０．８３３
+１
+１
+１
+５
+０．９３８
+０．９９６
+０．９９２
+０．９９６
+０．８９２
+０．９８３
+０．９６７
+０．９８３
+０．８１３
+０．９６３
+０．９２７
+０．９６３
+６
+０．４８９
+０．７３８
+０．６５８
+０．８２５
+０．３７１
+０．７２８
+０．６００
+０．７４１
+０．５７４
+０．８６
+０．７０７
+０．７９７
+７
+０．４８９
+０．５９６
+０．６７９
+０．５５４
+０．４３２
+０．３９２
+０．５２８
+０．６３９
+０．４４１
+０．５１４
+０．５８６
+０．５８４
+８
+０．７４０
+０．８４０
+０．９０７
+０．９０７
+０．６１２
+０．７６０
+０．７５９
+０．８５７
+０．６４０
+０．７９２
+０．８０６
+０．８６６
+９
+０．６５２
+０．６００
+０．６２４
+０．７３８
+０．５０２
+０．４６０
+０．４８９
+０．４９０
+０．５８２
+０．５５３
+０．６０５
+０．５３４
+１０
+０．５６２
+０．３６０
+０．６１２
+０．７６４
+０．４３９
+０．４６１
+０．４６２
+０．６３２
+０．５６４
+０．５９９
+０．６００
+０．６２７
+１１
+０．６２１
+０．７４５
+０．７３５
+０．７５８
+０．１５９
+０．１００
+０．１５１
+０．１５９
+０．０６３
+０．０５５
+０．０５９
+０．０７１
+　　由表３可以看出本文提出的LEＧDBSCAN 算法在常用数
+据集上相对于其他算法具有较好的表现.由图３－图７可以
+看出,存在LEＧDBSCAN 算法的类簇的序号与其他算法类簇
+的序号不同的情况,这是因为本文所提出的算法是基于密度
+递减的顺序进行聚类的.如图４所示,以特征最明显的ComＧ
+pound数据集为例,图４(a)原数据集中的类簇C１密度最小,
+图４(e)中LEＧDBSCAN 算法的聚类结果中该类簇的序号为
+C６,说明密度明显小的类簇会最后被聚类.由表２中LEＧDBＧ
+SCAN 对每个数据集聚类的过程中计算得到的局部半径可以
+看出,对于密度不均匀的数据集,按照类簇被发现的顺序,其
+对应的局部半径是非严格递增的,位置靠后的类簇对应的局
+部半径明显大于位置靠前的类簇的局部半径;而对于密度较
+为均匀的数据集,各个类簇的局部半径基本相同.这也说明
+了LEＧDBSCAN 算法的合理性.
+４．３　三支聚类实验结果
+本文所提出的LE３WＧDBSCAN 算法与３WＧDBSCAN 算
+法在人工数据集上的聚类结果如图８－图１１所示,由于两个
+算法对Jain数据集的三支聚类结果相同,都是完全正确,因
+此未展示图的对比.算法得到的三支聚类结果在软聚类指标
+上的得分如表４所列.结合表３、表４可以看出,LE３WＧDBＧ
+SCAN 算法在提升二支聚类效果的同时,也能够保持较好的
+三支聚类效果.
+(a)原图
+(b)３WＧDBSCAN
+(c)LE３WＧDBSCAN
+图８　Aggregation三支聚类实验结果
+Fig．８　ExperimentalresultsofthreeＧwayclusteringofAggregation
+６
+０
+１
+ComputerScience 计算机科学
+Vol．５０,No．６,June２０２３
+
+===== PAGE 9 =====
+(a)原图
+(b)３WＧDBSCAN
+(c)LE３WＧDBSCAN
+图９　Compound三支聚类实验结果
+Fig．９　ExperimentalresultsofthreeＧwayclusteringofCompound
+(a)原图
+(b)３WＧDBSCAN
+(c)LE３WＧDBSCAN
+图１０　Pathbased三支聚类实验结果
+Fig．１０　ExperimentalresultsofthreeＧwayclusteringofPathbased
+(a)原图
+(b)３WＧDBSCAN
+(c)LE３WＧDBSCAN
+图１１　Flame三支聚类实验结果
+Fig．１１　ExperimentalresultsofthreeＧwayclusteringofFlame
+　　以图８中Aggregation数据集的聚类结果为例,相对于
+３WＧDBSCAN 算法的聚类结果,本文所提出的LE３WＧDBＧ
+SCAN 算法只会将处于类簇边缘或者多个类簇之间、模糊度
+较强的对象划分到边界域中,避免了聚类结果过于模糊.因
+此,实验结果说明本文所提出的算法能够较好地平衡聚类的
+模糊性和确定性,在保留模糊信息的同时,也能够避免必要的
+确定性信息的丢失.
+表４　三支聚类实验结果
+Table４　ExperimentalresultsofthreeＧwayclustering
+数据集
+α
+３WＧ
+DBSCAN
+LE３WＧ
+DBSCAN
+α∗
+３WＧ
+DBSCAN
+LE３WＧ
+DBSCAN
+γ
+３WＧ
+DBSCAN
+LE３WＧ
+DBSCAN
+１
+０．８８９
+０．９７７
+０．８４５
+０．９８２
+０．８５４
+０．９９１
+２
+０．８２４
+０．９１６
+０．９６２
+０．９５８
+０．９６２
+０．９６０
+３
+０．８０７
+０．９５５
+０．８９１
+０．９５４
+０．９０３
+０．９７７
+４
+０．９９５
+１
+０．９９７
+１
+０．９９７
+１
+５
+０．９１９
+０．９２４
+０．９２５
+０．９３８
+０．９２９
+０．９４２
+６
+０．２５８
+０．８５８
+０．３１４
+０．８６７
+０．３１４
+０．９２９
+７
+０．３４３
+０．６０９
+０．５２４
+０．６２４
+０．５３２
+０．７８３
+８
+０．４７４
+０．９２１
+０．４８７
+０．９２３
+０．４８７
+０．９６０
+９
+０．５５０
+０．６２６
+０．７３４
+０．６３８
+０．７６２
+０．７９０
+１０
+０．５９５
+０．８８３
+０．７０９
+０．８８４
+０．７１３
+０．９４４
+１１
+０．９５９
+０．９７０
+０．９７４
+０．９８７
+０．９８７
+０．９９３
+　　结束语　基于密度的DBSCAN 聚类算法具有能够处理
+任何形状的数据集和自动确定类簇个数的优势,但是无法处
+理多密度和重叠的数据集.三支聚类结合了传统的硬聚类和
+三支决策模型的特点,能够对模糊和重叠的数据进行聚类.
+因此,本文首先根据局部半径和密度递减原则提出了基于局
+部半径的DBSCAN 算法,使其能够对多密度数据集进行聚
+类,并且根据kＧ近邻距离自动确定局部半径,避免了参数过于
+敏感的问题.然后,根据基于局部半径的DBSCAN 得到的二
+支聚类结果,通过考虑近邻的类标签对边界点和噪声点重新
+分类,提出了基于局部半径的三支DBSCAN 算法,使其能够
+对多密度、重叠数据集进行聚类.实验结果表明,本文所提出
+的算法对多密度模糊数据集具有较好的聚类效果.希望本文
+的研究工作能够对医疗健康等领域产生的多密度模糊的数据
+进行有效的处理和分析,挖掘出数据中潜在的信息.
+参考文献
+[１] DAYANAM A,ELBACT,MARCELB,etal．Clusteranalysis
+ofurbanultrafineparticlessizedistributions[J]．Atmospheric
+PollutionResearch,２０１９,１０(１):４５Ｇ５２．
+[２] WU XD,ZHU X Q,WU G Q,etal．Dataminingwithbigdata
+７
+０
+１
+申秋萍,等:基于局部半径的三支DBSCAN 算法
+
+===== PAGE 10 =====
+[J]．IEEE Transactionson KnowledgeandDataEngineering,
+２０１４,２６(１):９７Ｇ１０７．
+[３] HUANGJJ,CHEN W,LIU A,etal．Clusterquery:anewqueＧ
+rypatternontemporalknowledgegraph[J]．World WideWeb,
+２０２０,２３(２):７５５Ｇ７７９．
+[４] BROWN D,JAPA A,SHIY．AfastdensityＧgridbasedclusteＧ
+ringmethod[C]∥IEEE９thAnnualComputingandCommuniＧ
+cationWorkshopandConference．Piscataway,NJ:IEEE,２０１９:
+４８Ｇ５４．
+[５] GONDEAU A,AOUABED Z,HIJRI M,etal．Object weighＧ
+ting:Anewclusteringapproachtodealwithoutliersandcluster
+overlapincomputationalbiology[J]．IEEE ACM Transactions
+onComputationalBiologyandBioinformatics,２０２１,１８(２):６３３Ｇ
+６４３．
+[６] XUCY,LINRJ,CAIJY,etal．DeepimageclusteringbyfuＧ
+singcontrastivelearning and neighborrelation mining[J]．
+KnowledgeBasedSystems,２０２２,２３８:１０７９６７．
+[７] SINGHS,GANIEA H．Applicationsofpicturefuzzysimilarity
+measuresinpatternrecognition,clustering,andMADM[J]．ExＧ
+pertSystemswithApplications,２０２１,１６８:１１４２６４．
+[８] XUZZ,SHEN D R,NIE TZ,etal．AclusterＧbasedoversamＧ
+plingalgorithmcombiningSMOTEandkＧmeansforimbalanced
+medicaldata[J]．InformationSciences,２０２１,５７２:５７４Ｇ５８９．
+[９] WANG X,WANG J,YU G X,etal．NetworkregularizedbiＧ
+clusteringforcancersubtypecategorization[J]．ChineseJournal
+ofComputers,２０１９,４２(６):１２７４Ｇ１２８８．
+[１０]RODRIGUEZA,LAIO A．Clusteringbyfastsearchandfindof
+densitypeaks[J]．Science,２０１４,３４４(６１９１):１４９２Ｇ１４９６．
+[１１]LIU R,WANG H,YU X M．SharedＧnearestＧneighborＧbased
+clusteringbyfastsearchandfindofdensitypeaks[J]．InformaＧ
+tionSciences,２０１８,４５０:２００Ｇ２２６．
+[１２]ESTER M,KRIEGEL H P,SANDERJ,etal．AdensityＧbased
+algorithmfordiscoveringclustersinlargespatialdatabaseswith
+noise[C]∥ProceedingsoftheSecondInternationalConference
+onKnowledge Discoveryand Data Mining．Portland,Oregon:
+AAAIPress,１９９６:２２６Ｇ２３１．
+[１３]JAIN A K．Dataclustering:５０yearsbeyondkＧmeans[J]．PatＧ
+ternRecognitionLetters,２０１０,３１(８):６５１Ｇ６６６．
+[１４]D＇URSOP．InformationalParadigm,managementofuncertainty
+andtheoreticalformalismsintheclusteringframework:AreＧ
+view[J]．InformationSciences,２０１７,４００:３０Ｇ６２．
+[１５]PETERSG,CRESPOFA,LINGRASP,etal．Softclustering－
+Fuzzyandroughapproachesandtheirextensionsandderivatives
+[J]．InternationalJournalof Approximate Reasoning,２０１３,
+５４(２):３０７Ｇ３２２．
+[１６]YU H,JIAOP,YAOYY,etal．DetectingandrefiningoverlapＧ
+pingregionsincomplexnetworkswiththreeＧwaydecisions[J]．
+InformationSciences,２０１６,３７３:２１Ｇ４１．
+[１７]YU H,ZHANGC,WANGGY．AtreeＧbasedincrementaloverＧ
+lappingclustering methodusingthethreeＧwaydecisiontheory
+[J]．KnowledgeBasedSystems,２０１６,９１:１８９Ｇ２０３．
+[１８]WANG P X,YAO Y Y．CE３:AthreeＧwayclustering method
+basedon mathematicalmorphology[J]．KnowledgeBasedSysＧ
+tems,２０１８,１５５:５４Ｇ６５．
+[１９]ZHANG K．AthreeＧwaycＧmeansalgorithm[J]．AppliedSoft
+Computing,２０１９,８２:１０５５３６．
+[２０]MAJIP,PALSK．RFCM:Ahybridclusteringalgorithmusing
+rough and Fuzzy sets[J]．FundamentaInformaticae,２００７,
+８０(４):４７５Ｇ４９６．
+[２１]HUL H,LIU H K,ZHANGJF,etal．KRＧDBSCAN:AdensiＧ
+tyＧbasedclusteringalgorithmbasedonreversenearestneighbor
+andinfluencespace[J]．ExpertSystems With Applications,
+２０２１,１８６:１１５７６３．
+[２２]CHENFY．AnimprovedDBSCANalgorithmforadaptivelydeＧ
+terminingparametersinmultiＧdensityenvironment[C]∥２ndInＧ
+ternationalConferenceonArtificialIntelligenceandInformation
+Systems．New York:ACM,２０２１:１Ｇ４．
+[２３]YU H,CHEN L Y,YAO J T,etal．A threeＧwayclustering
+methodbasedonanimprovedDBSCANalgorithm[J]．Physica
+A:Statistical Mechanics and its Applications,２０１９,５３５:
+１２２２８９．
+[２４]GIONISA,MANNILA H,TSAPARASP．ClusteringaggregaＧ
+tion[J]．ACM TransactionsonKnowledgeDiscoveryfromData,
+２００７,１(１):１Ｇ３０．
+[２５]ZAHNCT．GraphＧtheoreticalmethodsfordetectinganddescriＧ
+binggestaltclusters[J]．IEEE Transactionson Computers,
+１９７１,１００(１):６８Ｇ８６．
+[２６]CHANG H,YEUNG D Y．RobustpathＧbasedspectralclusteＧ
+ring[J]．PatternRecognition,２００８,４１(１):１９１Ｇ２０３．
+[２７]JAIN A,LAW M．Dataclustering:Auser＇sdilemma[J]．Lecture
+NotesinComputerScience,２００５,３７７６:１Ｇ１０．
+[２８]FUL M,MEDICOE．FLAME,anovelfuzzyclusteringmethod
+fortheanalysisofDNA microarraydata[J]．BMCbioinformaＧ
+tics,２００７,８(１):３Ｇ３．
+[２９]HOUJ,ZHANG A H,QIN M．Densitypeakclusteringbased
+onrelativedensityrelationship[J]．PatternRecognition,２０２０,
+１０８:１０７５５４．
+[３０]XIEJY,GAO HC,XIE W X,etal．RobustclusteringbydetecＧ
+tingdensitypeaksandassigningpointsbasedonfuzzyweighted
+kＧnearestneighbors[J]．InformationSciences,２０１６,３５４:１９Ｇ４０．
+SHEN Qiuping,bornin １９９７,postgraＧ
+duate．Her mainresearchinterestsinＧ
+clude threeＧway decisions, machine
+learninganduncertaininformationproＧ
+cessing．
+ZHANG Qinghua,bornin１９７４．Ph．D,
+professor,Ph．D supervisor．His main
+researchinterestsincluderoughsets,
+fuzzysets,granularcomputingandunＧ
+certaininformationprocessing．
+(责任编辑:柯颖)
+８
+０
+１
+ComputerScience 计算机科学
+Vol．５０,No．６,June２０２３

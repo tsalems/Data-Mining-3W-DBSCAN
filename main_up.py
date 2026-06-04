@@ -15,20 +15,20 @@ from visualize_up import plot_paper_comparison
 
 def main():
     data_dir = "data"
-    os.makedirs("results", exist_ok=True)
+    os.makedirs("results/LE3W", exist_ok=True)
     
     # 4 Dataset được dùng trong paper cho Figure 8, 9, 10, 11
     target_datasets = {
-        '3L': {'eps_3w': 0.19, 'minPts': 5, 'eta': 0.20, 'k_le': 15},
-        '4C': {'eps_3w': 0.07, 'minPts': 5, 'eta': 0.20, 'k_le': 20},
-        'S1': {'eps_3w': 0.05, 'minPts': 10, 'eta': 0.15, 'k_le': 30},
-        'Aggregation': {'eps_3w': 0.09, 'minPts': 5, 'eta': 0.20, 'k_le': 25},
-        'Compound': {'eps_3w': 0.13, 'minPts': 5, 'eta': 0.20, 'k_le': 20},
-        'Pathbased': {'eps_3w': 0.13, 'minPts': 5, 'eta': 0.20, 'k_le': 15},
-        'Flame': {'eps_3w': 0.15, 'minPts': 4, 'eta': 0.20, 'k_le': 10},
-        'IRIS': {'eps_3w': 0.70, 'minPts': 4, 'eta': 0.30, 'k_le': 10},
-        'Glass': {'eps_3w': 1.30, 'minPts': 4, 'eta': 0.20, 'k_le': 10},
-        'Seeds': {'eps_3w': 0.70, 'minPts': 4, 'eta': 0.20, 'k_le': 10}
+        # '3L': {'eps_3w': 0.19, 'minPts': 5, 'eta': 0.20, 'k_le': 15},
+        # '4C': {'eps_3w': 0.07, 'minPts': 5, 'eta': 0.20, 'k_le': 20},
+        # 'S1': {'eps_3w': 0.05, 'minPts': 10, 'eta': 0.15, 'k_le': 30},
+        'Aggregation': {'eps_3w': 0.09, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 10, 'k_le': 20},
+        'Compound':    {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 2,  'k_le': 15},
+        'Pathbased':   {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 3,  'k_le': 11},
+        'Flame':       {'eps_3w': 0.15, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 18, 'k_le': 24},
+        'IRIS':        {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.30, 'minPts_le': 8,  'k_le': 14},
+        # 'Glass': {'eps_3w': 1.30, 'minPts_3w': 4, 'eta': 0.20, 'minPts_le': 4, 'k_le': 10},
+        'Seeds':       {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 20, 'k_le': 25}
     }
     table2_data = []
     table4_data = []
@@ -50,12 +50,12 @@ def main():
         n_samples = X.shape[0]
         X = MinMaxScaler().fit_transform(X)
         
-        # 1. Chạy 3W-DBSCAN (Thuật toán cũ)
-        tw_dbscan = ThreeWayDBSCAN(eps=params['eps_3w'], min_samples=params['minPts'], eta=params['eta']).fit(X)
+        # 1. Chạy 3W-DBSCAN (Thuật toán cũ) — dùng minPts_3w riêng
+        tw_dbscan = ThreeWayDBSCAN(eps=params['eps_3w'], min_samples=params['minPts_3w'], eta=params['eta']).fit(X)
         gamma_3w, alpha_3w, a_star_3w = calculate_soft_metrics(tw_dbscan, n_samples)
-        
-        # 2. Chạy LE3W-DBSCAN (Thuật toán cải tiến)
-        le3w_dbscan = LE3W_DBSCAN(min_samples=params['minPts'], k_neighbors=params['k_le']).fit(X)
+
+        # 2. Chạy LE3W-DBSCAN (Thuật toán cải tiến) — dùng minPts_le riêng
+        le3w_dbscan = LE3W_DBSCAN(min_samples=params['minPts_le'], k_neighbors=params['k_le']).fit(X)
         gamma_le, alpha_le, a_star_le = calculate_soft_metrics(le3w_dbscan, n_samples)
         
         # Lấy Bán kính cục bộ cho Table 2
@@ -71,8 +71,8 @@ def main():
         table4_data.append(("", "alpha_star", a_star_3w, a_star_le))
         
         # Xuất biểu đồ so sánh giống Figure 8, 9, 10, 11
-        plot_paper_comparison(X, y, tw_dbscan, le3w_dbscan, ds_name, params['fig'])
-        print(f" -> Đã xuất ảnh: figures/Figure_{params['fig']}_{ds_name}.png")
+        plot_paper_comparison(X, y, tw_dbscan, le3w_dbscan, ds_name)
+        print(f" -> Đã xuất ảnh: figures/LE3W/Figure_{ds_name}.png")
 
     # --- IN BẢNG TABLE 2 ---
     print("\n" + "="*120)
@@ -98,7 +98,7 @@ def main():
         print(df_t4.to_string(index=False))
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filepath = os.path.join("results", f"Table4_LE3W_{timestamp}.xlsx")
+        filepath = os.path.join("results/LE3W", f"Table4_LE3W_{timestamp}.xlsx")
         
         df_export = df_t4.set_index([("Dataset", ""), ("Metric", "")])
         df_export.to_excel(filepath)

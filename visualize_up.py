@@ -2,7 +2,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-os.makedirs("figures", exist_ok=True)
+os.makedirs("figures/LE3W", exist_ok=True)
 
 COLORS = ['blue', 'green', 'red', 'purple', 'orange', 'cyan', 'brown', 'pink', 'olive', 'teal']
 MARKERS = ['v', '*', 's', 'D', '^', 'p', 'H', 'X', 'd', '>']
@@ -41,8 +41,8 @@ def plot_threeway(ax, X, model, title):
     ax.set_yticks([])
     ax.legend(loc='center left', bbox_to_anchor=(1, 0.5), fontsize=8, framealpha=0.8)
 
-def plot_paper_comparison(X, y, tw_model, le3w_model, dataset_name, fig_num):
-    """Vẽ format 3 hình (a, b, c) ngang nhau cho các Hình 8, 9, 10, 11"""
+def plot_paper_comparison(X, y, tw_model, le3w_model, dataset_name):
+    """Vẽ format 3 hình (a, b, c) ngang nhau cho các Hình"""
     fig, axs = plt.subplots(1, 3, figsize=(15, 5))
     
     plot_original(axs[0], X, y, "(a) Original")
@@ -50,5 +50,5 @@ def plot_paper_comparison(X, y, tw_model, le3w_model, dataset_name, fig_num):
     plot_threeway(axs[2], X, le3w_model, "(c) LE3W-DBSCAN")
     
     plt.tight_layout()
-    plt.savefig(f"figures/Figure_{fig_num}_{dataset_name}.png", dpi=300, bbox_inches='tight', facecolor='white')
+    plt.savefig(f"figures/LE3W/Figure_{dataset_name}.png", dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
