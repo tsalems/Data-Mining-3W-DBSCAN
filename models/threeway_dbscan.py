@@ -72,7 +72,9 @@ class ThreeWayDBSCAN:
             else:
                 noises.append(i)  # Noise -> Xử lý sau
                 
-        # Line 5: Strategy 2 - Mở rộng BND cho điểm biên chồng lấp (Eq. 8)
+        # Line 5: Strategy 2 - Mở rộng BND cho điểm biên VÀ điểm nhiễu chồng lấp (Eq. 8)
+        # Paper: "FOR mỗi điểm x có S(x)=0 HOẶC S(x)=-1" — cả border lẫn noise
+        assigned_noises = set()
         for k in unique_clusters:
             bnd_items = list(self.BND[k])
             for idx in bnd_items:
@@ -82,22 +84,32 @@ class ThreeWayDBSCAN:
                     n_cluster = self.labels_[n_idx]
                     if n_cluster != -1 and n_cluster != k:
                         self.BND[n_cluster].add(idx)
-                        
-        # Line 6: Strategy 3 - Gán điểm nhiễu vào vùng BND (Eq. 9, 10)
+
+        # Xử lý noise points trong Strategy 2: nếu có eps-neighbor thuộc cụm nào thì add vào BND đó
+        for noise_idx in noises:
+            neighbors = np.where(D[noise_idx] <= self.eps)[0]
+            for n_idx in neighbors:
+                n_cluster = self.labels_[n_idx]
+                if n_cluster != -1:
+                    self.BND[n_cluster].add(noise_idx)
+                    assigned_noises.add(noise_idx)
+
+        # Line 6: Strategy 3 - Gán điểm nhiễu CÒN LẠI (chưa được gán ở Strategy 2) vào BND (Eq. 9, 10)
+        remaining_noises = [n for n in noises if n not in assigned_noises]
         all_pos_indices = []
         pos_cluster_map = {}
         for k in unique_clusters:
             for idx in self.POS[k]:
                 all_pos_indices.append(idx)
-                pos_cluster_map[idx] = k 
-                
+                pos_cluster_map[idx] = k
+
         if len(all_pos_indices) > 0:
-            for noise_idx in noises:
+            for noise_idx in remaining_noises:
                 # Eq. 9: Tìm điểm lõi gần nhất (NCN)
                 distances_to_cores = D[noise_idx, all_pos_indices]
                 nearest_core_relative_idx = np.argmin(distances_to_cores)
                 nearest_core_real_idx = all_pos_indices[nearest_core_relative_idx]
-                
+
                 # Eq. 10: Gán noise vào BND của cụm tương ứng
                 target_cluster = pos_cluster_map[nearest_core_real_idx]
                 self.BND[target_cluster].add(noise_idx)

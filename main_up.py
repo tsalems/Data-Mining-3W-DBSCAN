@@ -19,12 +19,12 @@ def main():
     
     target_datasets = {
         # --- Dataset bài báo LE3W-DBSCAN (Shen 2023) ---
-        'Aggregation': {'eps_3w': 0.09, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 10, 'k_le': 20},
-        'Compound':    {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 5,  'k_le': 15},
-        'Pathbased':   {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 5,  'k_le': 12},
-        'Flame':       {'eps_3w': 0.15, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 18, 'k_le': 24},
-        'IRIS':        {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.30, 'minPts_le': 8,  'k_le': 14},
-        'Seeds':       {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 20, 'k_le': 25},
+        'Aggregation': {'eps_3w': 0.09, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 13, 'k_le': 22},  # eps_error=0.00009
+        'Compound':    {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 7,  'k_le': 14},  # eps_error=0.01263
+        'Pathbased':   {'eps_3w': 0.13, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 5,  'k_le': 14},  # eps_error=0.00002
+        'Flame':       {'eps_3w': 0.15, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 6,  'k_le': 7},   # eps_error=0.00818 (best available)
+        'IRIS':        {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.30, 'minPts_le': 4,  'k_le': 12},  # eps_error=0.15327 (cần tune thêm)
+        'Seeds':       {'eps_3w': 0.70, 'minPts_3w': 4,  'eta': 0.20, 'minPts_le': 5,  'k_le': 19},  # eps_error=0.05006 (nghi dataset khác)
         # --- Dataset bài báo 3W-DBSCAN (Yu 2019) ---
         '4C':          {'eps_3w': 0.07, 'minPts_3w': 5,  'eta': 0.20, 'minPts_le': 20, 'k_le': 43},
         # '3L': LE3W khong hieu qua (cum elongated), NMI chi dat 0.545

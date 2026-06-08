@@ -27,22 +27,28 @@ class LE3W_DBSCAN:
         
         # --- Giai đoạn 1: LE-DBSCAN (Hai chiều) ---
         while unclassified:
-            # Chọn điểm có mật độ cao nhất (khoảng cách trung bình nhỏ nhất)
-            p = min(unclassified, key=lambda idx: density[idx])
+            # Chọn điểm có mật độ cao nhất (khoảng cách trung bình nhỏ nhất), tie-break bằng index
+            p = min(unclassified, key=lambda idx: (density[idx], idx))
             
             # Tính Bán kính cục bộ (Local Eps) dựa trên k-láng giềng
             eps_j = np.sort(D[p])[self.k_neighbors]
             
             # Tìm láng giềng của p
             neighbors_p = np.where(D[p] <= eps_j)[0]
-            
-            if len(neighbors_p) >= self.min_samples:
+
+            # Chỉ đếm láng giềng THỰC SỰ chưa phân loại (hoặc còn là nhiễu tạm).
+            # Không tính điểm đã vào cluster khác — vì p cần đủ "thành viên mới"
+            # để tạo thành cluster hợp lệ. Nếu đếm tất cả (kể cả đã classified) thì
+            # với k >= minPts điều kiện luôn True → mọi điểm rải rác đều tạo cluster thừa.
+            new_count = sum(1 for q in neighbors_p if q in unclassified or labels[q] == -1)
+
+            if new_count >= self.min_samples:
                 cluster_id += 1
                 self.local_eps_dict[cluster_id] = eps_j
                 labels[p] = cluster_id
                 core_flags[p] = True
                 unclassified.remove(p)
-                
+
                 # Bắt đầu loang cụm
                 queue = list(neighbors_p)
                 while queue:
@@ -52,7 +58,7 @@ class LE3W_DBSCAN:
                         labels[q] = cluster_id
                     elif labels[q] == -1:
                         labels[q] = cluster_id
-                        
+
                     # Chỉ mở rộng từ điểm thuộc cụm hiện tại, tránh set core_flags sai cho điểm cụm khác
                     if labels[q] == cluster_id:
                         neighbors_q = np.where(D[q] <= eps_j)[0]
@@ -63,20 +69,10 @@ class LE3W_DBSCAN:
                                     if n_q not in queue:
                                         queue.append(n_q)
             else:
+                # Không đủ láng giềng mới → điểm này là nhiễu, không tạo cluster
                 unclassified.remove(p)
                 labels[p] = -1
                 
-        # Gộp cụm quá nhỏ vào noise — ngưỡng tối thiểu là max(min_samples, 5)
-        # để tránh cụm chỉ 2-3 điểm khi min_samples nhỏ
-        min_cluster_size = max(self.min_samples, 5)
-        for cid in set(labels) - {-1}:
-            members = np.where(labels == cid)[0]
-            if len(members) < min_cluster_size:
-                labels[members] = -1
-                core_flags[members] = False
-                if cid in self.local_eps_dict:
-                    del self.local_eps_dict[cid]
-
         # --- Giai đoạn 2: LE3W-DBSCAN (Ba chiều) ---
         unique_clusters = set(labels) - {-1}
         for c in unique_clusters:
