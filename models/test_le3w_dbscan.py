@@ -133,8 +133,8 @@ if __name__ == "__main__":
     X = np.vstack((X_dense1, X_dense2, X_sparse))
 
     # Chạy thuật toán
-    min_pts = 2
-    k = 30
+    min_pts = 10
+    k = 15
     model = LE3W_DBSCAN(min_pts=min_pts, k=k)
     pos_regions, bnd_regions = model.fit(X)
 
